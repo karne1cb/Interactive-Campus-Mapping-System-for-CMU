@@ -1,0 +1,81 @@
+General View (For all):
+	Map View:
+		Have the map take up the whole page with a search bar and a nav tab that opens up on the left side
+		Have the ability to login either as an admin or a student
+		When searching, make some regex that can separate hall name and room num/floor
+		Show the location as a pin and maybe a shape
+		* Possibly add a route option
+		Location Tab:
+			Have the tab open up with an image of it along with a description and links
+			If a building, do the following:
+				if the user is looking for a room/floor have it have a link that'll open up the floor plan that'll replace the map view.
+
+	Nav Bar:
+		Settings View:
+			Dark mode
+			Location? (maybe ask for it?)
+			Cookies (will have to see)
+		About:
+			A little page about me and this program
+	
+	Building View:
+		When inside the floor plan of a building, have the ability to switch floors and search rooms
+		* Possibly add a route option
+	
+	
+
+Admin View (same as general, just has a FEW differences):
+	Map View:
+		In the nav tab, have a tools section that'll open up admin tools
+		Tool section:
+			The following exists (these go into separate views):
+				Add Building, Modify Building, Remove Building
+	
+	Add Location View:
+		Allows admins to add a location
+		Asks for location name, location shape (allows for straight lines and arcs or rectangle and circle mode for an easier time)
+		/ location (where the pin will be), floor plan (optional?), description, if it is in a building (asks for more info after that),
+		/ if it is in a building (asks for more after that)
+
+User View (same as general, just has a FEW differences):
+	Map View:
+		Nav tab:
+			Has option to request and favorite locations
+	Request Location view:
+		Can only request a location, not a building
+		Asks for location name, if it is in a building (asks for more after that), location shape (allows for straight lines and arcs or rectangle and circle mode for an easier time)
+		/ location (where the pin will be), description, if it is in a building (asks for more info after that),
+		If in building, asks which building it is in (maybe have a it auto complete?) and roomnumber (optional)
+			
+Mongo DB:
+	User:
+		fName
+		lName
+		glbId
+		isAdmin, true or false (see a better way to do this?)
+		favLocs (list of saved locations [building names/_ids], max of 255 maybe?)
+	
+	Location:
+		name
+		desc
+		lon
+		lad
+		shape (shape that'll be created, lon lad is the center of the shape!)
+		locImg
+		isBuilding (bool, if true, then the next thing will matter, otherwise it doesn't)
+			buildingId (links to a building record)
+		isInBuilding (bool, if true, then the next thing will matter, otherwise it doesn't)
+			inBuildingId (what building it's in)
+			roomLoc (which room it's in)
+			* Could add an ability to pin it in a building too?
+		links (links to relevant pages)
+		published: bool
+		orgRequestor (glbId of requestor | kept for record keeping)
+		
+	Building:
+		floorPlan (list of images/pdfs that are part of the building floor plan)
+		college (what college it is related to)
+		
+	LocationRequest: (possible feature for students to request locations?)
+		requestor (glbId of requestor)
+		Same as loc otherwise
