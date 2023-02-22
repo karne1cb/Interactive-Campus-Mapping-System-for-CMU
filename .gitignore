@@ -1,0 +1,5 @@
+# VScode stuff
+**/.vscode/
+**/front-end/package-lock.json
+**/back-end/package-lock.json
+.vscode-test

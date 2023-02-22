@@ -1,12 +1,15 @@
+https://trello.com/b/U4bpfeEt
+
 General View (For all):
 	Map View:
 		Have the map take up the whole page with a search bar and a nav tab that opens up on the left side
 		Have the ability to login either as an admin or a student
-		When searching, make some regex that can separate hall name and room num/floor
+		When searching, make some regex that can separate location name and room num/floor
 		Show the location as a pin and maybe a shape
 		* Possibly add a route option
 		Location Tab:
 			Have the tab open up with an image of it along with a description and links
+			Favorite Star: favorites the location
 			If a building, do the following:
 				if the user is looking for a room/floor have it have a link that'll open up the floor plan that'll replace the map view.
 
@@ -14,33 +17,40 @@ General View (For all):
 		Settings View:
 			Dark mode
 			Location? (maybe ask for it?)
-			Cookies (will have to see)
+			Cookies (will have to see):
+				have a page that says what is store in cookies (probably just darkmode and first time vist?)
 		About:
 			A little page about me and this program
 	
 	Building View:
 		When inside the floor plan of a building, have the ability to switch floors and search rooms
 		* Possibly add a route option
-	
-	
 
 Admin View (same as general, just has a FEW differences):
 	Map View:
 		In the nav tab, have a tools section that'll open up admin tools
 		Tool section:
 			The following exists (these go into separate views):
-				Add Building, Modify Building, Remove Building
+				Add location, Modify location, Remove location
+	
+	Nav Bar:
+		Favorites:
+			shows favorites
 	
 	Add Location View:
 		Allows admins to add a location
 		Asks for location name, location shape (allows for straight lines and arcs or rectangle and circle mode for an easier time)
-		/ location (where the pin will be), floor plan (optional?), description, if it is in a building (asks for more info after that),
+		/ location (where the pin will be), floor plan (optional?), description, if it is a building (asks for more info after that),
 		/ if it is in a building (asks for more after that)
 
 User View (same as general, just has a FEW differences):
 	Map View:
 		Nav tab:
 			Has option to request and favorite locations
+	Nav Bar:
+		Favorites:
+			shows favorites
+			
 	Request Location view:
 		Can only request a location, not a building
 		Asks for location name, if it is in a building (asks for more after that), location shape (allows for straight lines and arcs or rectangle and circle mode for an easier time)
