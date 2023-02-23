@@ -16,9 +16,9 @@ const adminCheck = function(req, res, next) {
       if (err) {
         res.status(401).send('Unauthorized: Invalid token');
       } else {
-        req.glbId = decoded.glbId;
-        var glbId = decoded.glbId;
-        User.findOne({ glbId }, function(err, user){
+        req.globalId = decoded.globalId;
+        var globalId = decoded.globalId;
+        User.findOne({ globalId }, function(err, user){
           // Check for Admin role on user
           if(user.role !== 'Admin'){
             res.status(401).send('Unauthorized: Not admin');

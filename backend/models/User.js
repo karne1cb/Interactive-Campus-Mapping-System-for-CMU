@@ -10,7 +10,7 @@ const saltRounds = 10; // Not sure what this does rn...
 const UserSchema = new mongoose.Schema({
     fName: {type: String, required: true},
     lName: {type: String, required: true},
-    glbId: {type: String, required: true, unique: true}, // Global ID
+    globalId: {type: String, required: true, unique: true}, // Global ID
     password: {type: String, required: true},
     isAdmin: {type: Boolean, required: true},
     favLocs: [{type: String, required: true}]

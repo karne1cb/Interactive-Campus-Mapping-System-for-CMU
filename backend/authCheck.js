@@ -14,7 +14,7 @@ const authCheck = function(req, res, next) {
       if (err) {
         res.status(401).send('Unauthorized: Invalid token');
       } else {
-        req.glbId = decoded.glbId;
+        req.globalId = decoded.globalId;
         next();
       }
     });
