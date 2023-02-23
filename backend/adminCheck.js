@@ -16,9 +16,9 @@ const adminCheck = function(req, res, next) {
       if (err) {
         res.status(401).send('Unauthorized: Invalid token');
       } else {
-        req.email = decoded.email;
-        var email = decoded.email;
-        User.findOne({ email }, function(err, user){
+        req.glbId = decoded.glbId;
+        var glbId = decoded.glbId;
+        User.findOne({ glbId }, function(err, user){
           // Check for Admin role on user
           if(user.role !== 'Admin'){
             res.status(401).send('Unauthorized: Not admin');
