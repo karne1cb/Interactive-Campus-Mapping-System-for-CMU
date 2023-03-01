@@ -31,15 +31,6 @@ class AuthService {
     localStorage.removeItem("user");
   }
 
-  // Register a user
-  register(email, password, role) {
-    return axios.post(API_URL + "register", {
-      email: email,
-      password: password,
-      role: role
-    });
-  }
-
   // Get JSON object with accessToken:[token value]
   getCurrentUser() {
     return JSON.parse(localStorage.getItem('user'));

@@ -20,7 +20,7 @@ const adminCheck = function(req, res, next) {
         var globalId = decoded.globalId;
         User.findOne({ globalId }, function(err, user){
           // Check for Admin role on user
-          if(user.role !== 'Admin'){
+          if(user.isAdmin !== true){
             res.status(401).send('Unauthorized: Not admin');
           } else {
             next();

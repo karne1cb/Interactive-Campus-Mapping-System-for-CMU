@@ -1,0 +1,59 @@
+:root{
+  --sideNavBarWidth: 200px;
+  --showNavBarWidthClosed: 30px;
+  --showNavBarWidthOpen: var(--sideNavBarWidth)+var(--showNavBarWidthClosed);
+}
+
+.sideNavBar {
+  position: absolute;
+  width: var(--sideNavBarWidth);
+  height: 100vh;
+  background-color: white;
+  z-index: 3;
+  transition: width 0.5s ease-in-out;
+}
+
+.sideNavBarClosed {
+  position: absolute;
+  width: 0;
+  height: 100vh;
+  composes: sideNavBar;
+  background-color: white;
+  z-index: 3;
+  transition: width 0.5s ease-in-out;
+}
+
+.logged-in {
+  position: absolute;
+  right: 0;
+  padding-right: 0px;
+  z-index: 3;
+}
+
+.logged-in button {
+  cursor: pointer;
+  display: block;
+  min-width: 125px;
+}
+
+
+.showSideNavBar {
+  position: absolute;
+  padding-left: 16vw;
+  width: var(--showNavBarWidthOpen);
+  height: 30px;
+  background-color: white;
+  z-index: 2;
+  transition: padding-left 0.5s ease-in-out;
+}
+
+.showSideNavBarClosed {
+  position: absolute;
+  padding-left: 0vw;
+  width: var(--showNavBarWidthClosed);
+  height: 30px;
+  composes: showSideNavBar;
+  background-color: white;
+  z-index: 2;
+  transition: padding-left 0.5s ease-in-out;
+}
