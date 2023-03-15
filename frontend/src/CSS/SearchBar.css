@@ -1,0 +1,70 @@
+:root{
+    --searchBarLeft: 30vw;
+    --searchBarHight: 200px;
+    --showSearchBarWidthClosed: 30px;
+    --showSearchBarWidthOpen: var(--searchBarWidth)+var(--showSearchBarWidthClosed);
+}
+
+.searchBar {
+    position: absolute;
+    top: 0;
+    left: var(--searchBarLeft);
+    width: 15vw;
+    margin-top: 0;
+    height: 0;
+    background-color: white;
+    z-index: 3;
+    transition: margin-top 0.5s ease-in-out;
+    display: inline;
+  }
+
+  .searchBarClosed {
+    position: absolute;
+    top: 0;
+    left: var(--searchBarLeft);
+    width: 15vw;
+    margin-top: -30px; /* Might need to change this based on size of the search bar...*/
+    height: 0;
+    background-color: white;
+    z-index: 3;
+    transition: margin-top 0.5s ease-in-out;
+    display: inline;
+  }
+
+  .showSearchBar {
+    position: absolute;
+    top: 0;
+    left: var(--searchBarLeft);
+    width: 10vh;
+    height: 50px;
+    background-color: white;
+    z-index: 2;
+    transition: height 0.5s ease-in-out;
+  }
+
+  .showSearchBarClosed {
+    position: absolute;
+    top: 0;
+    left: var(--searchBarLeft);
+    width: 10vh;
+    height: 20px;
+    background-color: white;
+    z-index: 2;
+    transition: height 0.5s ease-in-out;
+  }
+
+  .showSearchButton{
+    position: absolute;
+    left: 25%;
+    bottom: 0;
+    background-color: white;
+    z-index: 2;
+    transition: width 0.5s ease-in-out;
+  }
+
+  .searchButton{
+    margin-top: 3px;
+    margin-left: 5px;
+    position: absolute;
+    display: inline;
+  }

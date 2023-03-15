@@ -4,13 +4,18 @@ import { Route, BrowserRouter as Router, Routes, Navigate} from 'react-router-do
 import MapView from './Components/MapView';
 import Login from './Components/Login';
 import NavBar from './Components/SideNavBar';
+import SearchBar from './Components/SearchBar';
 import AdminTest from './Components/AdminCheck';
+
+
 
 function App() {
   return (
     <Router>
       <div className="App">
-        <NavBar />
+      {/* Hides the search bar and navbar when on the login screen. */}
+      <NavBar />
+      <SearchBar />
         <Routes>
           <Route exact path="/map" element={<MapView />} />
           <Route exact path="/adminTest" element={<AdminTest />} />

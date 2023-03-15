@@ -17,7 +17,6 @@
   position: absolute;
   width: 0;
   height: 100vh;
-  composes: sideNavBar;
   background-color: white;
   z-index: 3;
   transition: width 0.5s ease-in-out;
@@ -39,7 +38,7 @@
 
 .showSideNavBar {
   position: absolute;
-  padding-left: 16vw;
+  padding-left: var(--sideNavBarWidth);
   width: var(--showNavBarWidthOpen);
   height: 30px;
   background-color: white;
