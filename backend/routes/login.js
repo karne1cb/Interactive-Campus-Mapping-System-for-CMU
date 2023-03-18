@@ -72,7 +72,7 @@ router.post('/', function (req, res) {
           const token = jwt.sign(payload, secret, {
             expiresIn: '1h'
           });
-          res.status(200).send({ accessToken: token })
+          res.status(200).send({ globalId, accessToken: token })
         }
       });
     }

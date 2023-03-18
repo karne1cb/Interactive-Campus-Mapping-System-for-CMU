@@ -88,6 +88,18 @@ export default function RequestLocation() {
             ) : null}
             <button className='pinLocationButton'>Pin Location</button>
             <button className='addPointsButton'>Add Points</button>
+            {// placeholder input that allows direct longitude and latitude input
+            }
+            <input
+                type="number"
+                placeholder="Enter Longitude"
+                value={longitude}
+                onChange={(e) => setLongitude(e.target.value)} />
+            <input
+                type="number"
+                placeholder="Enter Latitude"
+                value={latitude}
+                onChange={(e) => setLatitude(e.target.value)} />
             <button className='addPictureButton'>Add Picture</button>
             <button className='addLinkButton'>Add Link</button>
             <button className='requestLocationButton'>Request Location</button>

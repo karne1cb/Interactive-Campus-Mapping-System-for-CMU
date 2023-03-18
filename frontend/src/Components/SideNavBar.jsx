@@ -44,7 +44,7 @@ export default function NavBar() {
 
     const handleLogout = () => {
         AuthService.logout();
-        navigate('/map');
+        setLoggedIn(false);
     };
 
     const handleLogin = () => {
@@ -55,9 +55,20 @@ export default function NavBar() {
         setOpen(!open)
     };
 
+    const badPaths = ['/login', '/RequestLocTest', '/RemoveLoc', '/AddLoc'];
+    // function that checks to see if the user is on a page that should not have the search bar
+    const checkPath = () => {
+        for (let i = 0; i < badPaths.length; i++) {
+            if (pathname === badPaths[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     return (
         <>
-            {pathname === '/login' ? null :
+            {checkPath(pathname)? null :
                 <div>
                     <div className={open ? 'showSideNavBar' : 'showSideNavBarClosed'}>
                         <button onClick={toggleSideNav}>Hide</button>
@@ -69,7 +80,11 @@ export default function NavBar() {
                                 <button onClick={handleLogout}>Logout</button>
                                 {/* This is where the favorites view will go (opens up over the nav bar*/}
                                 <button>Favorites</button>
-                                <button>Request Location</button>
+                                <button onClick={
+                                    () => {
+                                        navigate('/RequestLocTest');
+                                    }
+                                }>Request Location</button>
 
                                 {/* This is where the admin tools will go (each will open a component over the navbar) */}
 
@@ -77,7 +92,13 @@ export default function NavBar() {
                                     <div>
                                         <button>Add Location</button>
                                         <button>Modify Locaiton</button>
-                                        <button>Remove Locaiton</button>
+                                        <button
+                                            onClick={
+                                                () => {
+                                                    navigate('/RemoveLoc');
+                                                }
+                                            }
+                                        >Remove Locaiton</button>
                                     </div>
                                 ) : (<div></div>)
                                 }
