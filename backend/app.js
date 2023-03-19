@@ -14,6 +14,7 @@ const cors = require('cors');
 const indexRouter = require('./routes/index');
 const testAPIRouter = require("./routes/testAPI");
 const loginRouter = require("./routes/login");
+const locationRouter = require("./routes/location");
 
 // Database connection
 const mongoose = require("mongoose");
@@ -46,6 +47,7 @@ app.use(express.json());
 app.use('/', indexRouter);
 app.use("/testAPI", testAPIRouter);
 app.use('/login', loginRouter);
+app.use('/location', locationRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

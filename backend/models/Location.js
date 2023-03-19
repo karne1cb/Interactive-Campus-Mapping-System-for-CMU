@@ -10,6 +10,7 @@ const LocationSchema = new mongoose.Schema({
     desc: {type: String, required: true},
     lon: {type: Number, required: true},
     lat: {type: Number, required: true},
+    adress: {type: String, required: false},
     shape: {type: String, required: true},
     color: {type: String, required: true},
     locImg: {type: String, required: true}, // image url/uri

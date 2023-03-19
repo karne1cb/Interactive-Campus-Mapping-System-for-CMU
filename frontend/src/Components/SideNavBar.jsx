@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router';
 //import { Link } from 'react-router-dom';
 import AuthService from './AuthService';
 import '../CSS/SideNavBar.css';
+import SearchBar from './SearchBar';
 
 export default function NavBar() {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -17,7 +18,7 @@ export default function NavBar() {
     function isUserAdmin() {
         AuthService.isAdmin().then(res => {
             let adminConst = res;
-            console.log(adminConst);
+            //console.log(adminConst);
             if (adminConst === true) {
                 setIsAdmin(true);
             }
@@ -29,13 +30,14 @@ export default function NavBar() {
 
     useEffect(() => {
         const user = AuthService.getCurrentUser();
-        if (user) {
+        if (user !== null) {
             setLoggedIn(true);
             setGlobalId(user.globalId);
             isUserAdmin(); // Function here, since it was loading every time an action was taken
         } else {
             setLoggedIn(false);
         }
+        console.log(loggedIn);
         // close the navbar if the user is on the login page
         if (pathname === '/login') {
             setOpen(false);
@@ -55,62 +57,54 @@ export default function NavBar() {
         setOpen(!open)
     };
 
-    const badPaths = ['/login', '/RequestLocTest', '/RemoveLoc', '/AddLoc'];
-    // function that checks to see if the user is on a page that should not have the search bar
-    const checkPath = () => {
-        for (let i = 0; i < badPaths.length; i++) {
-            if (pathname === badPaths[i]) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     return (
-        <>
-            {checkPath(pathname)? null :
-                <div>
-                    <div className={open ? 'showSideNavBar' : 'showSideNavBarClosed'}>
-                        <button onClick={toggleSideNav}>Hide</button>
-                    </div>
-                    <div className={open ? 'sideNavBar' : 'sideNavBarClosed'}>
-                        {loggedIn ? (
-                            <div className="logged-in">
+        <div>
+            <div className={open ? 'showSideNavBar' : 'showSideNavBarClosed'}>
+                <button onClick={toggleSideNav}>Hide</button>
+            </div>
+            <div className={open ? 'sideNavBar' : 'sideNavBarClosed'}>
+                {loggedIn ? (
+                    <>
+                        <div className="logged-in">
+                            <div className="logged-inElements">
                                 <p>{globalId}</p>
                                 <button onClick={handleLogout}>Logout</button>
                                 {/* This is where the favorites view will go (opens up over the nav bar*/}
                                 <button>Favorites</button>
+                            </div>
+                            <div className="search">
+                                    <SearchBar />
+                                </div>
+                        </div>
+                        <div className="otherButtons">
+                            {/* This is where the admin tools will go (each will open a component over the navbar) */}
+                            {isAdmin ? (
+                                <div>
+                                    <button
+                                        onClick={
+                                            () => {
+                                                navigate('/AddLoc');
+                                            }
+                                        }
+                                    >Add Location</button>
+                                </div>
+                            ) : (<div>
                                 <button onClick={
                                     () => {
                                         navigate('/RequestLocTest');
                                     }
                                 }>Request Location</button>
-
-                                {/* This is where the admin tools will go (each will open a component over the navbar) */}
-
-                                {isAdmin ? (
-                                    <div>
-                                        <button>Add Location</button>
-                                        <button>Modify Locaiton</button>
-                                        <button
-                                            onClick={
-                                                () => {
-                                                    navigate('/RemoveLoc');
-                                                }
-                                            }
-                                        >Remove Locaiton</button>
-                                    </div>
-                                ) : (<div></div>)
-                                }
-                            </div>
-                        ) : (
-                            <div className="notLoggedIn">
-                                <button onClick={handleLogin}>Login</button>
-                            </div>
-                        )}
+                            </div>)
+                            }
+                            <button>About</button>
+                        </div>
+                    </>
+                ) : (
+                    <div className="notLoggedIn">
+                        <button onClick={handleLogin}>Login</button>
                     </div>
-                </div>
-            }
-        </>
+                )}
+            </div>
+        </div>
     );
 }

@@ -35,25 +35,28 @@ router.get('/:id', (req, res) => {
 * @access  Public
 */
 
-router.get('/search/:query', (req, res) => {
-    const query = req.params.query;
+router.get('/search/name/:name', (req, res) => {
+    const name = req.params.name;
     Location.find({
-        $text: {
-            $search: query
-        }
-    }, function(err, locations) {
-        if (locations.length === 0) {
-            res.status(204).send("No location was found with a keyword of: " + query + ".");
+        name : {$regex: name, $options: 'i'}
+    }, 'name desc address lon lat'
+    , function(err, locations) {
+        if (locations.length == 0) {
+            res.status(204).send("No location was found with a keyword of: " + name + ".");
         }
         else if (!err){
             console.log("Found locations: " + locations);
             res.status(200).send(locations);
         }
         else {
-            throw err;
+            res.status(500).send("Error searching for locations: " + err);
         }
     })
 });
+
+/*
+* TODO: Maybe add a search nick name / by floor / by building / by room etc.
+*/
 
 /* @route   POST /location
 * @desc    Create a new location

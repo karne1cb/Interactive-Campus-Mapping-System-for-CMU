@@ -1,5 +1,5 @@
-:root{
-  --sideNavBarWidth: 200px;
+:root {
+  --sideNavBarWidth: 300px;
   --showNavBarWidthClosed: 30px;
   --showNavBarWidthOpen: var(--sideNavBarWidth)+var(--showNavBarWidthClosed);
 }
@@ -24,17 +24,28 @@
 
 .logged-in {
   position: absolute;
-  right: 0;
+  right: 25%;
   padding-right: 0px;
   z-index: 3;
 }
 
-.logged-in button {
+.logged-inElements button {
   cursor: pointer;
-  display: block;
   min-width: 125px;
 }
 
+.logged-inElements {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.searchBar{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+}
 
 .showSideNavBar {
   position: absolute;
@@ -51,8 +62,19 @@
   padding-left: 0vw;
   width: var(--showNavBarWidthClosed);
   height: 30px;
-  composes: showSideNavBar;
   background-color: white;
   z-index: 2;
   transition: padding-left 0.5s ease-in-out;
+}
+
+.otherButtons {
+  position: absolute;
+  right: 25%;
+  bottom: 50px;
+  z-index: 3;
+}
+
+.otherButtons button {
+  cursor: pointer;
+  min-width: 125px;
 }
