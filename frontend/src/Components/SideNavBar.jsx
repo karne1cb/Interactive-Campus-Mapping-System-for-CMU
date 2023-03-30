@@ -5,14 +5,20 @@ import AuthService from './AuthService';
 import '../CSS/SideNavBar.css';
 import SearchBar from './SearchBar';
 
-export default function NavBar() {
+export default function NavBar(props) {
     const [loggedIn, setLoggedIn] = useState(false);
     const [globalId, setGlobalId] = useState('');
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+    const {navDestData} = props
     const { pathname } = location;
     const [isAdmin, setIsAdmin] = useState(false); // Might want to make sure this is fine to be here
+
+    const childToParent = (data) => {
+        //setClickedResults(data);
+        navDestData(data);
+    }
 
     // See if the user is an admin
     function isUserAdmin() {
@@ -29,6 +35,8 @@ export default function NavBar() {
     }
 
     useEffect(() => {
+        //wait a second to see if the user is logged in
+        
         const user = AuthService.getCurrentUser();
         if (user !== null) {
             setLoggedIn(true);
@@ -73,7 +81,7 @@ export default function NavBar() {
                                 <button>Favorites</button>
                             </div>
                             <div className="search">
-                                    <SearchBar />
+                                    <SearchBar resultData={childToParent /* TODO: CHANGE THIS NAME */}/>
                                 </div>
                         </div>
                         <div className="otherButtons">
