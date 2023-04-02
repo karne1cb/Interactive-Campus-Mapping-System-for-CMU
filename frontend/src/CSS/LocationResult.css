@@ -1,0 +1,50 @@
+:root {
+    --sideNavBarWidth: 300px;
+    --showNavBarWidthClosed: 30px;
+    --showNavBarWidthOpen: var(--sideNavBarWidth)+var(--showNavBarWidthClosed);
+    --searchResultsHeight: 60vh;
+}
+
+.locationResult {
+    position: absolute;
+    width: var(--sideNavBarWidth);
+    height: 100vh;
+    background-color: white;
+    z-index: 4;
+    transition: width 0.5s ease-in-out;
+}
+
+.locationResultClosed {
+    position: absolute;
+    width: 0;
+    height: 100vh;
+    background-color: white;
+    z-index: 4;
+    transition: width 0.5s ease-in-out;
+}
+
+.closeButton {
+    position: absolute;
+    right: 0;
+}
+
+.results {
+    position: absolute;
+    width: fit-content;
+    right: 0;
+    width: var(--sideNavBarWidth);
+    padding-right: 0px;
+    z-index: 3;
+}
+
+.adminButtons {
+    position: absolute;
+    right: 25%;
+    bottom: 50px;
+    z-index: 3;
+  }
+  
+  .adminButtons button {
+    cursor: pointer;
+    min-width: 125px;
+  }

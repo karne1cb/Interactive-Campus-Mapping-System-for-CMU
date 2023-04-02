@@ -5,6 +5,7 @@ import { useLocation } from 'react-router';
 //import '../CSS/SearchBar.css';
 import SearchService from './SearchService';
 import SearchResult from './SearchResult';
+import LocationResult from './LocationResult';
 
 export default function SearchBar(props) {
 
@@ -20,6 +21,7 @@ export default function SearchBar(props) {
 
     const badPaths = ['/login', '/RequestLocTest', '/RemoveLoc', '/AddLoc'];
     // function that checks to see if the user is on a page that should not have the search bar
+    // TODO: remove this function as it is deprecated
     const checkPath = () => {
         for (let i = 0; i < badPaths.length; i++) {
             if (pathname === badPaths[i]) {
@@ -69,7 +71,7 @@ export default function SearchBar(props) {
             console.log(data);
             const results = [];
             for (let i = 0; i < data.length; i++) {
-                results.push([data[i].name, data[i].desc, data[i].lon, data[i].lat]);
+                results.push([data[i]._id, data[i].name, data[i].desc, data[i].lon, data[i].lat]);
             }
             setSearchResults(results);
         });
@@ -84,8 +86,6 @@ export default function SearchBar(props) {
 
     return (
         <>
-            {checkPath(pathname) ? null :
-
                 <div className='searchBar'>
                     <input
                         className='destinationBar'
@@ -120,13 +120,12 @@ export default function SearchBar(props) {
                             // add the results here
                             searchResults.map((result) => {
                                 return (
-                                    <SearchResult name={result[0]} desc={result[1]} lon={result[2]} lat={result[3]} childToParent={childToParent /* TODO: CHANGE THIS NAME */} />
+                                    <SearchResult _id={result[0]} name={result[1]} desc={result[2]} lon={result[3]} lat={result[4]} childToParent={childToParent /* TODO: CHANGE THIS NAME */} />
                                 );
                             })
                         }
                     </div>
                 </div>
-            }
         </>
     )
 }

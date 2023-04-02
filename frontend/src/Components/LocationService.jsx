@@ -12,7 +12,7 @@ class LocationService {
     * If the admin confirms, the location will be added to the database
     * FOR NOW THE shape, color and locImg WILL BE HARDCODED (TODO: CHANGE THIS)
    */
-    addLocation(locName, locDesc, longitude, latitude, locAddress, isBuilding, buildingId, isInBuilding, inBuildingId, floorNum, roomNum, links) {
+  addLocation(locName, locDesc, longitude, latitude, locAddress, isBuilding, buildingId, isInBuilding, inBuildingId, floorNum, roomNum, links) {
     return axios
       .post(API_URL + "location", {
         name: locName,
@@ -32,7 +32,7 @@ class LocationService {
         roomLoc: roomNum,
         links,
         orgRequestor: AuthService.getCurrentUser().globalId
-      }, {headers: AuthService.authHeader()})
+      }, { headers: AuthService.authHeader() })
       .then(response => {
         return response.status;
       });
@@ -50,6 +50,13 @@ class LocationService {
 
   getLocations() {
     return axios.get(API_URL + "location").then(response => {
+      return response.data;
+    });
+  }
+
+  getLocation(locID) {
+    return axios.get(API_URL + "location/" + locID)
+    .then(response => {
       return response.data;
     });
   }

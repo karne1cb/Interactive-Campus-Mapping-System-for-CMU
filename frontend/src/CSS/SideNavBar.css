@@ -2,6 +2,7 @@
   --sideNavBarWidth: 300px;
   --showNavBarWidthClosed: 30px;
   --showNavBarWidthOpen: var(--sideNavBarWidth)+var(--showNavBarWidthClosed);
+  --searchResultsHeight: 60vh;
 }
 
 .sideNavBar {
@@ -51,6 +52,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: scroll;
+  height: var(--searchResultsHeight);
 }
 .searchResults p{
   line-height: 1;
