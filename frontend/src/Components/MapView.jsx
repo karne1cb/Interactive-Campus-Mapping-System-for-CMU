@@ -2,6 +2,7 @@ import { React, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl } from 'react-leaflet';
 import AuthService from './AuthService';
+import MapDirectionService from './MapDirectionService';
 import LocationService from './LocationService';
 import LocationResult from './LocationResult';
 import NavBar from './SideNavBar';
@@ -28,6 +29,7 @@ const destIcon = L.icon({ // Custom marker icon for the destination marker
     shadowSize: [41, 41],
     shadowAnchor: [13, 41]
 });
+// Use this: https://openrouteservice.org/dev/#/api-docs
 
 // Changes where the zoom and zoom out buttons are located
 const zoomControlPosition = 'bottomright';
@@ -47,6 +49,7 @@ export default function MapView() {
     const [newLoc, setNewLoc] = useState(false);
     const [lastUpdated, setLastUpdated] = useState(null);
     const [map, setMap] = useState(null); // State to grab the map
+    const [dirLayer, setDirLayer] = useState(null); // State to grab the direction layer
 
     // This function returns the longitude and latitude of the destination
     // This does assume that the data is in the correct format (i.e. [long, lat])
@@ -55,12 +58,37 @@ export default function MapView() {
         return [data[1], data[2]];
     }
 
+    // This function is called when the user gets directions
+    const getWalkingDir= () => {
+        //console.log(destination);
+        //console.log(location);
+        if (destination !== null && location !== null) {
+            const dirService = new MapDirectionService();
+            dirService.getWalkingDirections(location, destination)
+            .then((data) => {
+                //console.log(data); // Is in GeoJSON format
+                // Now we need to add the GeoJSON to the map
+                setDirLayer(L.geoJSON(data).addTo(map))
+                //console.log(dirLayer);
+            });
+        }
+    }
+
+    // This function clears the map of all directions
+    const clearDirections = () => {
+        if (dirLayer !== null) {
+            dirLayer.clearLayers();
+            setDirLayer(null);
+        }
+    }
+
     const navDestData = (data) => { //Gets data all the way from search results
         // Check to see if the data changed from last time
         if (data.destination !== destination) {
             setNewDest(true);
             setDestination(data.destination);
             setLastUpdated('dest');
+            clearDirections();
         }
         else {
             setNewDest(false);
@@ -69,12 +97,13 @@ export default function MapView() {
             setNewLoc(true);
             setLocation(data.location);
             setLastUpdated('loc');
+            clearDirections();
         }
         else {
             setNewLoc(false);
         }
-        
-        console.log(data);
+        getWalkingDir(); // ....
+        //console.log(data);
     }
 
     const sleep = ms => new Promise(
@@ -103,7 +132,7 @@ export default function MapView() {
     const addDestMarker = () => {
         if (destination !== null) {
             const destData = parseNavData(destination);
-            if (newDest) map.flyTo(destData, defaultZoom);
+            if (newDest) map.flyTo(destData, defaultZoom, {duration: 1});
             //setUpdateDestRes(true);
             return (
                 <Marker position={destData} icon={destIcon}>
@@ -137,7 +166,6 @@ export default function MapView() {
             )
         }
         else if (lastUpdated === 'loc') {
-            console.log(location);
             return (
                 <LocationResult locationID={location[0]}/>
             )

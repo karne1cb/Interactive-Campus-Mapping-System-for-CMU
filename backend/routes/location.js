@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
     Location.findById(req.params.id)
-        .then(location => res.json(location))
+        .then(location => res.send(location))
         .catch(err => res.status(404).json({success: false}));
 });
 
