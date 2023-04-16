@@ -52,7 +52,7 @@ export default function MapView() {
     const [dirLayer, setDirLayer] = useState(null); // State to grab the direction layer
 
     // This function returns the longitude and latitude of the destination
-    // This does assume that the data is in the correct format (i.e. [long, lat])
+    // This does assume that the data is in the correct format (i.e. [lat, long])
     const parseNavData = (data) => {
         //console.log(data);
         return [data[1], data[2]];

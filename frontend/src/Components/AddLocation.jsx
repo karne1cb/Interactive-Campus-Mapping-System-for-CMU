@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from './AuthService';
 import LocationService from './LocationService.jsx';
+import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMapEvents } from 'react-leaflet';
 import '../CSS/RequestAddLocation.css';
 
 export default function AddLocation() {
@@ -40,6 +41,12 @@ export default function AddLocation() {
 
     const navigate = useNavigate();
 
+    // Changes where the zoom and zoom out buttons are located
+    const zoomControlPosition = 'bottomright';
+    var centerLoc = [43.5915541973643, -84.77518008037302];
+    var defaultZoom = 17;
+    const [map, setMap] = useState(null); // State to grab the map
+
 
     // Event that handles if the location is a building or not
     const handleIsBuilding = () => {
@@ -55,7 +62,7 @@ export default function AddLocation() {
     const handleAddLocation = () => {
         console.log("Adding location...");
         LocationService.addLocation(locName, locDesc, longitude, latitude, locAddress, isBuilding, isBuildingName,
-             isInBuilding, isInBuildingName, floorNum, roomNum, locLinks).then((res) => {
+            isInBuilding, isInBuildingName, floorNum, roomNum, locLinks).then((res) => {
                 // Log the sent request
                 console.log("Status: " + res);
                 if (res === 200) {
@@ -68,97 +75,133 @@ export default function AddLocation() {
             });
     };
 
+    // Event that handles when the user clicks on the map (pins a location)
+    const HandleMapClick = () => {
+        useMapEvents({
+            click: (e) => {
+                setLatitude(e.latlng.lat);
+                setLongitude(e.latlng.lng);
+                console.log("Latitude: " + e.latlng.lat + " Longitude: " + e.latlng.lng);
+            }
+        });
+        return (
+            <Marker position={[latitude,longitude]}>
+                <Popup>
+                    <h3>Current Position</h3>
+                </Popup>
+            </Marker>
+        );
+    };
+
     return (
-        <div className="requestLocation">
-            <h1>Add Location</h1>
-            <input
-                type="text"
-                placeholder="Enter Location Name"
-                value={locName}
-                onChange={(e) => setLocName(e.target.value)} />
-            <input
-                type="text"
-                placeholder="Enter Location Description"
-                value={locDesc}
-                onChange={(e) => setLocDesc(e.target.value)}
-            />
-            <input type="text"
-                placeholder="Enter Location Address"
-                value={locAddress}
-                onChange={(e) => setLocAddress(e.target.value)}
-            />
-            <input
-                type="checkbox"
-                id="isBuilding"
-                name="isBuilding"
-                value="isBuilding"
-                hidden={isInBuilding}
-                onClick={(e) => handleIsBuilding(e.target.value)}
-            />
-            <label hidden={isInBuilding}> Is this a building? </label>
-            {isBuilding & ! isInBuilding ? (
-                <>
-                    <input
-                        type="text"
-                        placeholder="Enter Building Name"
-                        value={isBuildingName}
-                        onChange={(e) => setIsBuildingName(e.target.value)}
-                    />
-                </>
-            ) : null}
-             <input
-                type="checkbox"
-                id="isInBuilding"
-                name="isInBuilding"
-                value="isInBuilding"
-                hidden={isBuilding}
-                onClick={(e) => handleIsInBuilding(e.target.value)}
-            />
-            <label hidden={isBuilding}> Is this inside of a building? </label>
-            {isInBuilding  & !isBuilding? (<>
-                <input type="text"
-                    placeholder="Enter Room Building Name"
-                    value={isInBuildingName}
-                    onChange={(e) => setIsInBuildingName(e.target.value)}
+        <>
+            <div className="requestLocation">
+                <h1>Add Location</h1>
+                <input
+                    type="text"
+                    placeholder="Enter Location Name"
+                    value={locName}
+                    onChange={(e) => setLocName(e.target.value)} />
+                <input
+                    type="text"
+                    placeholder="Enter Location Description"
+                    value={locDesc}
+                    onChange={(e) => setLocDesc(e.target.value)}
                 />
                 <input type="text"
-                    placeholder="Enter Room Number"
-                    value={roomNum}
-                    onChange={(e) => setRoomNum(e.target.value)}
+                    placeholder="Enter Location Address"
+                    value={locAddress}
+                    onChange={(e) => setLocAddress(e.target.value)}
                 />
                 <input
-                    type="number"
-                    placeholder="Enter Floor Number"
-                    value={floorNum}
-                    onChange={(e) => setFloorNum(e.target.value)}
+                    type="checkbox"
+                    id="isBuilding"
+                    name="isBuilding"
+                    value="isBuilding"
+                    hidden={isInBuilding}
+                    onClick={(e) => handleIsBuilding(e.target.value)}
                 />
-            </>
-            ) : null}
-            <button className='pinLocationButton'>Pin Location</button>
-            {// placeholder input that allows direct longitude and latitude input
-            }
-            <input
-                type="number"
-                placeholder="Enter Longitude"
-                value={longitude}
-                onChange={(e) => setLongitude(e.target.value)} />
-            <input
-                type="number"
-                placeholder="Enter Latitude"
-                value={latitude}
-                onChange={(e) => setLatitude(e.target.value)} />
-            <button className='addPointsButton'>Add Points</button>
-            {
-                // This is where shape and color will be selected later
-            }
-            <button className='addPictureButton'>Add Picture</button>
-            <input
-                type="text"
-                placeholder="Enter Links (comma separated)"
-                value={locLinks}
-                onChange={(e) => setLocLinks(e.target.value)}
-            />
-            <button className='addLocationButton' onClick={handleAddLocation}>Add Location</button>
-        </div>
+                <label hidden={isInBuilding}> Is this a building? </label>
+                {isBuilding & !isInBuilding ? (
+                    <>
+                        <input
+                            type="text"
+                            placeholder="Enter Building Name"
+                            value={isBuildingName}
+                            onChange={(e) => setIsBuildingName(e.target.value)}
+                        />
+                    </>
+                ) : null}
+                <input
+                    type="checkbox"
+                    id="isInBuilding"
+                    name="isInBuilding"
+                    value="isInBuilding"
+                    hidden={isBuilding}
+                    onClick={(e) => handleIsInBuilding(e.target.value)}
+                />
+                <label hidden={isBuilding}> Is this inside of a building? </label>
+                {isInBuilding & !isBuilding ? (<>
+                    <input type="text"
+                        placeholder="Enter Room Building Name"
+                        value={isInBuildingName}
+                        onChange={(e) => setIsInBuildingName(e.target.value)}
+                    />
+                    <input type="text"
+                        placeholder="Enter Room Number"
+                        value={roomNum}
+                        onChange={(e) => setRoomNum(e.target.value)}
+                    />
+                    <input
+                        type="number"
+                        placeholder="Enter Floor Number"
+                        value={floorNum}
+                        onChange={(e) => setFloorNum(e.target.value)}
+                    />
+                </>
+                ) : null}
+                <button className='pinLocationButton'>Pin Location</button>
+                {// placeholder input that allows direct longitude and latitude input
+                }
+                <input
+                    type="number"
+                    placeholder="Enter Longitude"
+                    value={longitude}
+                    onChange={(e) => setLongitude(e.target.value)} />
+                <input
+                    type="number"
+                    placeholder="Enter Latitude"
+                    value={latitude}
+                    onChange={(e) => setLatitude(e.target.value)} />
+                <button className='addPointsButton'>Add Points</button>
+                {
+                    // This is where shape and color will be selected later
+                }
+                <button className='addPictureButton'>Add Picture</button>
+                <input
+                    type="text"
+                    placeholder="Enter Links (comma separated)"
+                    value={locLinks}
+                    onChange={(e) => setLocLinks(e.target.value)}
+                />
+                <button className='addLocationButton' onClick={handleAddLocation}>Add Location</button>
+            </div>
+            <div className="map">
+                <MapContainer className="mapContainer"
+                    center={centerLoc}
+                    zoom={defaultZoom}
+                    scrollWheelZoom={true}
+                    zoomControl={false}
+                    ref={setMap}
+                    >
+                    <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <ZoomControl position={zoomControlPosition} />
+                    <HandleMapClick/>
+                </MapContainer>
+            </div>
+        </>
     );
 }

@@ -55,7 +55,7 @@
   overflow-y: auto;
   height: var(--searchResultsHeight);
 }
-.searchResults p{
+.searchResults p, .searchResults h3{
   line-height: 1;
   font-size: small;
 }

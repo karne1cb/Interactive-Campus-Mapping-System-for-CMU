@@ -35,6 +35,7 @@
     width: var(--sideNavBarWidth);
     padding-right: 0px;
     z-index: 3;
+    word-wrap: break-word;
 }
 
 .adminButtons {
