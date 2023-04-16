@@ -38,11 +38,10 @@ class LocationService {
       });
   }
 
-  removeLocation(locName) {
+  deleteLocation(locID) {
     return axios
-      .post(API_URL + "location", {
-        locName
-      })
+      .delete(API_URL + "location/" + locID,
+      { headers: AuthService.authHeader() })
       .then(response => {
         return response.data;
       });

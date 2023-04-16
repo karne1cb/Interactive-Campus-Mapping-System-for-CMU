@@ -27,6 +27,7 @@ export default function NavBar(props) {
             //console.log(adminConst);
             if (adminConst === true) {
                 setIsAdmin(true);
+                console.log(AuthService.authHeader());
             }
             else {
                 setIsAdmin(false);
@@ -45,7 +46,6 @@ export default function NavBar(props) {
         } else {
             setLoggedIn(false);
         }
-        console.log(loggedIn);
         // close the navbar if the user is on the login page
         if (pathname === '/login') {
             setOpen(false);

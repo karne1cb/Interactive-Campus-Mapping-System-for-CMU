@@ -55,7 +55,7 @@ router.get('/search/name/:name', (req, res) => {
 });
 
 /*
-* TODO: Maybe add a search nick name / by floor / by building / by room etc.
+* TODO: Maybe add a search nickname / by floor / by building / by room etc.
 */
 
 /* @route   POST /location

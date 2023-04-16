@@ -15,7 +15,8 @@ const LocationSchema = new mongoose.Schema({
     color: {type: String, required: true},
     locImg: {type: String, required: true}, // image url/uri
     isBuilding: {type: Boolean, required: true},
-    buildingId: {type: String, required: false}, // building id: only required if isBuilding is true
+    hasFloorPlan: {type: String, required: false}, // hasFloorPlan: only required if isBuilding is true;
+    floorPlanLoc: {type: String, required: false}, // floorPlanLoc: only required if isBuilding is true and hasFloorPlan is true;
     isInBuilding: {type: Boolean, required: true}, // is this location inside a building?
     inBuildingId: {type: String, required: false}, // building id: only required if isInBuilding is true
     floor: {type: Number, required: false}, // floor number: only required if isInBuilding is true

@@ -17,7 +17,7 @@ export default function LocationResult(props) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(locationID === null){
+        if (locationID === null) {
             setIsOpen(false);
             return;
         }
@@ -39,6 +39,17 @@ export default function LocationResult(props) {
         });
     }, [locationID]);
 
+    const handleDelete = () => {
+        // add prompt to confirm delete
+        if (window.confirm('Are you sure you want to delete this location?')) {
+            LocationService.deleteLocation(locationID).then((data) => {
+                console.log(data);
+                setIsOpen(false);
+            });
+        }
+        else alert('Location not deleted');
+    }
+
     return (
         <div className={isOpen ? 'locationResult' : 'locationResultClosed'}>
             <div className='results'>
@@ -48,10 +59,10 @@ export default function LocationResult(props) {
                 <p>{locationData.links}</p>
             </div>
             {
-                 isAdmin? (
+                isAdmin ? (
                     <div className='adminButtons'>
-                        <button className='adminButton' onClick={() => {navigate('/EditLoc/'+locationID)}}>Edit</button>
-                        <button className='adminButton' onClick={() => {}}>Delete</button>
+                        <button className='adminButton' onClick={() => { navigate('/EditLoc/' + locationID) }}>Edit</button>
+                        <button className='adminButton' onClick={() => { handleDelete() }}>Delete</button>
                     </div>
                 ) : null
             }
