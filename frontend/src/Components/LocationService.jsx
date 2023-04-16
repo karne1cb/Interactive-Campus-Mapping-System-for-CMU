@@ -60,6 +60,32 @@ class LocationService {
       return response.data;
     });
   }
+
+  updateLocation(locID, locName, locDesc, longitude, latitude, locAddress, isBuilding, buildingId, isInBuilding, inBuildingId, floorNum, roomNum, links) {
+    return axios
+      .put(API_URL + "location/" + locID, {
+        name: locName,
+        desc: locDesc,
+        lon: longitude,
+        lat: latitude,
+        address: locAddress,
+        // Some default values for now...
+        shape: "POINT",
+        color: "red",
+        locImg: ' ', // Blank for now
+        isBuilding,
+        buildingId,
+        isInBuilding,
+        inBuildingId,
+        floor: floorNum,
+        roomLoc: roomNum,
+        links,
+        orgRequestor: AuthService.getCurrentUser().globalId
+      }, { headers: AuthService.authHeader() })
+      .then(response => {
+        return response.status;
+      });
+  }
 }
 
 export default new LocationService();

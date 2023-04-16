@@ -1,5 +1,6 @@
 import { React, useEffect, useState } from 'react';
 import LocationService from './LocationService';
+import { useNavigate } from 'react-router';
 import AuthService from './AuthService';
 import '../CSS/LocationResult.css';
 
@@ -13,6 +14,7 @@ export default function LocationResult(props) {
     const [isOpen, setIsOpen] = useState(false);
     const [locationData, setLocationData] = useState({});
     const [isAdmin, setIsAdmin] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if(locationID === null){
@@ -48,7 +50,7 @@ export default function LocationResult(props) {
             {
                  isAdmin? (
                     <div className='adminButtons'>
-                        <button className='adminButton' onClick={() => {}}>Edit</button>
+                        <button className='adminButton' onClick={() => {navigate('/EditLoc/'+locationID)}}>Edit</button>
                         <button className='adminButton' onClick={() => {}}>Delete</button>
                     </div>
                 ) : null
