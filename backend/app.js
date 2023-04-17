@@ -16,6 +16,7 @@ const testAPIRouter = require("./routes/testAPI");
 const loginRouter = require("./routes/login");
 const locationRouter = require("./routes/location");
 const mapdirectionRouter = require("./routes/mapdirection");
+const uploadLocImgRouter = require("./routes/uploadLocImg");
 
 // Database connection
 const mongoose = require("mongoose");
@@ -50,6 +51,7 @@ app.use("/testAPI", testAPIRouter);
 app.use('/login', loginRouter);
 app.use('/location', locationRouter);
 app.use('/directions', mapdirectionRouter);
+app.use('/uploadLocImg', uploadLocImgRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

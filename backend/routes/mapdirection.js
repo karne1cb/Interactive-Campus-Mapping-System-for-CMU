@@ -15,7 +15,7 @@ const apiUrl = 'https://api.openrouteservice.org/v2/directions/'
 // get request to get the directions from the api when walking
 router.get('/walking/:dir', authCheck, function (req, res) {
     const dir = req.params.dir;
-    const splitDir = dir.split(','); // should split this into an array of 4
+    const splitDir = dir.split(','); // should split this into an array of 4 --> [startLat, startLong, endLat, endLong]
     if (splitDir.length != 4) {
         res.status(400).send("Invalid direction request");
         return;
