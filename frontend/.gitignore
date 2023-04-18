@@ -6,7 +6,7 @@
 .pnp.js
 
 # image_uploads folder in public (don't want to upload images to github)
-/public/image_uploads
+/public/img_uploads
 
 # testing
 /coverage
