@@ -213,7 +213,7 @@ export default function EditLocation() {
                 }
                 {/* <button className='addPictureButton' onClick={handlePicture}>Add Picture</button> */}
                 <h4>Upload an image</h4>
-                    <img src='usr/src/app/uploads/boom.jpg'/>
+                    <img src={'/img_uploads/boom2.jpg'}/>
                     <UploadLocImg/>
                 <input
                     type="text"

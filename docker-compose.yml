@@ -1,12 +1,15 @@
-version: '3.1'
+version: '1.0'
 services:
   # Create frontend container
-  front-end: # Name of our service
+  frontend: # Name of our service
     build: ./frontend # path to dockerfile
     ports: # Port binding to host from docker container
       - "3000:3000" # Bind port 3000 of host to 3000 of container
     container_name: frontend-docker
     restart: always # What to do if container crashes
+    volumes: # Mounting volumes
+      - "./frontend/public/img_uploads:/usr/src/app/frontend/public/img_uploads"
+      - "./frontend/src:/usr/src/app/frontend/src" # lets see if this works lol
     links:
       - backend
   # Create backend container
@@ -18,7 +21,7 @@ services:
     container_name: backend-docker
     restart: always
     volumes:
-      - "./frontend/public:/usr/src/app/backend/uploads"
+      - "./frontend/public/img_uploads:/usr/src/app/backend/img_uploads"
     links:
       - mongo
   # Create database container

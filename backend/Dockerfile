@@ -11,6 +11,7 @@ RUN export NODE_OPTIONS=--openssl-legacy-provider
 RUN npm install
 # Copy app
 COPY . .
+# Would be nice to set up a volume instead, but this works for now
 # Expose port to access server
 EXPOSE 9000
 # Command to run our app
