@@ -3,8 +3,6 @@ import './CSS/index.css';
 import { Route, BrowserRouter as Router, Routes, Navigate} from 'react-router-dom';
 import MapView from './Components/MapView';
 import Login from './Components/Login';
-import NavBar from './Components/SideNavBar';
-import SearchBar from './Components/SearchBar';
 import AdminTest from './Components/AdminCheck';
 import RequestLocation from './Components/RequestLocation';
 import RemoveLocation from './Components/RemoveLocation';

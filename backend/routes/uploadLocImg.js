@@ -20,7 +20,7 @@ const upload = multer({ storage: storage }); // TODO: maybe add a limit in produ
 router.post('/', upload.single('image'), (req, res) => {
     console.log(req.file);
     if (!req.file) {
-        res.status(400).send("No file uploaded");
+        res.status(400).send("Error: No file uploaded");
     } else {
         res.status(200).send(req.file.filename);
     }
