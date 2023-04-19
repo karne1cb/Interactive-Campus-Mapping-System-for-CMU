@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import AuthService from './AuthService';
+import UploadLocImg from './UploadLocImg.jsx';
 import LocationService from './LocationService.jsx';
-import UploadLocImg from './UploadLocImg';
+import ImageService from './ImageService.jsx';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMapEvents } from 'react-leaflet';
 import '../CSS/RequestAddLocation.css';
 
@@ -39,11 +39,12 @@ export default function EditLocation() {
     const [latitude, setLatitude] = useState('');
 
     const [locImg, setLocImg] = useState('');
-    const [locLinks, setLocLinks] = useState([]);
+    const [locLinks, setLocLinks] = useState(['']);
 
     const navigate = useNavigate();
     const location = useLocation();
     const { pathname } = location;
+    const [isLoaded, setIsLoaded] = useState(false);
 
     // Changes where the zoom and zoom out buttons are located
     const zoomControlPosition = 'bottomright';
@@ -80,33 +81,50 @@ export default function EditLocation() {
                 }
             });
     };
-    const handlePicture = () => {
+    const handleImageUpload = (e) => {
         console.log("Adding picture...");
+        e.preventDefault();
+        const formData = new FormData();
+        const ext = e.target.files[0].name.split(".").pop();
+        formData.append("image", e.target.files[0], __filename=`${locName}.${ext}`);
+        console.log(formData.get("image"));
+        ImageService.uploadLocImg(formData).then((res) => {
+            console.log(res);
+            if (res === 200) {
+                alert("Image uploaded successfully!");
+            } else {
+                alert("Error uploading image");
+            }
+        });
     };
 
     //Get the location data from the backend on when the page is first loaded
     useEffect(() => {
-        if (lId === null) {
-            alert("Error getting location id");
-            return;
+        if (!(isLoaded)) {
+            if (lId === null) {
+                alert("Error getting location id");
+                return;
+            }
+            LocationService.getLocation(lId).then((data) => {
+                console.log(data);
+                setLocName(data.name);
+                setLocDesc(data.desc);
+                setLongitude(data.lon);
+                setLatitude(data.lat);
+                setLocAddress(data.address);
+                setIsBuilding(data.isBuilding);
+                setIsBuildingName(data.buildingName);
+                setIsInBuilding(data.isInBuilding);
+                setIsInBuildingName(data.buildingName);
+                setFloorNum(data.floorNum);
+                setRoomNum(data.roomNum);
+                setLocLinks(data.links);
+                setLocImg(data.locImg);
+            });
+            setIsLoaded(true);
         }
-        LocationService.getLocation(lId).then((data) => {
-            console.log(data);
-            setLocName(data.name);
-            setLocDesc(data.desc);
-            setLongitude(data.lon);
-            setLatitude(data.lat);
-            setLocAddress(data.address);
-            setIsBuilding(data.isBuilding);
-            setIsBuildingName(data.buildingName);
-            setIsInBuilding(data.isInBuilding);
-            setIsInBuildingName(data.buildingName);
-            setFloorNum(data.floorNum);
-            setRoomNum(data.roomNum);
-            setLocLinks(data.links);
-            setLocImg(data.locImg);
-        });
-    }, []);
+
+    }, [isLoaded, lId]);
 
 
     // Event that handles when the user clicks on the map (pins a location)
@@ -129,99 +147,102 @@ export default function EditLocation() {
 
     return (
         <>
-            <div className="requestLocation">
-                <h1>Edit Location</h1>
-                <input
-                    type="text"
-                    placeholder="Enter Location Name"
-                    value={locName}
-                    onChange={(e) => setLocName(e.target.value)} />
-                <input
-                    type="text"
-                    placeholder="Enter Location Description"
-                    value={locDesc}
-                    onChange={(e) => setLocDesc(e.target.value)}
-                />
-                <input type="text"
-                    placeholder="Enter Location Address"
-                    value={locAddress}
-                    onChange={(e) => setLocAddress(e.target.value)}
-                />
-                <input
-                    type="checkbox"
-                    id="isBuilding"
-                    name="isBuilding"
-                    value="isBuilding"
-                    hidden={isInBuilding}
-                    onClick={(e) => handleIsBuilding(e.target.value)}
-                />
-                <label hidden={isInBuilding}> Is this a building? </label>
-                {isBuilding & !isInBuilding ? (
-                    <>
-                        <input
-                            type="text"
-                            placeholder="Enter Building Name"
-                            value={isBuildingName}
-                            onChange={(e) => setIsBuildingName(e.target.value)}
-                        />
-                    </>
-                ) : null}
-                <input
-                    type="checkbox"
-                    id="isInBuilding"
-                    name="isInBuilding"
-                    value="isInBuilding"
-                    hidden={isBuilding}
-                    onClick={(e) => handleIsInBuilding(e.target.value)}
-                />
-                <label hidden={isBuilding}> Is this inside of a building? </label>
-                {isInBuilding & !isBuilding ? (<>
-                    <input type="text"
-                        placeholder="Enter Room Building Name"
-                        value={isInBuildingName}
-                        onChange={(e) => setIsInBuildingName(e.target.value)}
+            <div>
+                <form className="requestLocation">
+                    <h1>Edit Location</h1>
+                    <input
+                        type="text"
+                        placeholder="Enter Location Name"
+                        value={locName}
+                        onChange={(e) => setLocName(e.target.value)} />
+                    <input
+                        type="text"
+                        placeholder="Enter Location Description"
+                        value={locDesc}
+                        onChange={(e) => setLocDesc(e.target.value)}
                     />
                     <input type="text"
-                        placeholder="Enter Room Number"
-                        value={roomNum}
-                        onChange={(e) => setRoomNum(e.target.value)}
+                        placeholder="Enter Location Address"
+                        value={locAddress}
+                        onChange={(e) => setLocAddress(e.target.value)}
                     />
                     <input
-                        type="number"
-                        placeholder="Enter Floor Number"
-                        value={floorNum}
-                        onChange={(e) => setFloorNum(e.target.value)}
+                        type="checkbox"
+                        id="isBuilding"
+                        name="isBuilding"
+                        value="isBuilding"
+                        hidden={isInBuilding}
+                        onClick={(e) => handleIsBuilding(e.target.value)}
                     />
-                </>
-                ) : null}
-                <button className='pinLocationButton'>Pin Location</button>
-                {// placeholder input that allows direct longitude and latitude input
-                }
-                <input
-                    type="number"
-                    placeholder="Enter Longitude"
-                    value={longitude}
-                    onChange={(e) => setLongitude(e.target.value)} />
-                <input
-                    type="number"
-                    placeholder="Enter Latitude"
-                    value={latitude}
-                    onChange={(e) => setLatitude(e.target.value)} />
-                <button className='addPointsButton'>Add Points</button>
-                {
-                    // This is where shape and color will be selected later
-                }
-                {/* <button className='addPictureButton' onClick={handlePicture}>Add Picture</button> */}
-                <h4>Upload an image</h4>
-                    <img src={'/img_uploads/boom2.jpg'}/>
-                    <UploadLocImg/>
-                <input
-                    type="text"
-                    placeholder="Enter Links (comma separated)"
-                    value={locLinks}
-                    onChange={(e) => setLocLinks(e.target.value)}
-                />
-                <button className='updateLocationButton' onClick={handleUpdateLocation}>Update Location</button>
+                    <label hidden={isInBuilding}> Is this a building? </label>
+                    {isBuilding & !isInBuilding ? (
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Enter Building Name"
+                                value={isBuildingName}
+                                onChange={(e) => setIsBuildingName(e.target.value)}
+                            />
+                        </>
+                    ) : null}
+                    <input
+                        type="checkbox"
+                        id="isInBuilding"
+                        name="isInBuilding"
+                        value="isInBuilding"
+                        hidden={isBuilding}
+                        onClick={(e) => handleIsInBuilding(e.target.value)}
+                    />
+                    <label hidden={isBuilding}> Is this inside of a building? </label>
+                    {isInBuilding & !isBuilding ? (<>
+                        <input type="text"
+                            placeholder="Enter Room Building Name"
+                            value={isInBuildingName}
+                            onChange={(e) => setIsInBuildingName(e.target.value)}
+                        />
+                        <input type="text"
+                            placeholder="Enter Room Number"
+                            value={roomNum}
+                            onChange={(e) => setRoomNum(e.target.value)}
+                        />
+                        <input
+                            type="number"
+                            placeholder="Enter Floor Number"
+                            value={floorNum}
+                            onChange={(e) => setFloorNum(e.target.value)}
+                        />
+                    </>
+                    ) : null}
+                    <button className='pinLocationButton'>Pin Location</button>
+                    {// placeholder input that allows direct longitude and latitude input
+                    }
+                    <input
+                        type="number"
+                        placeholder="Enter Longitude"
+                        value={longitude}
+                        onChange={(e) => setLongitude(e.target.value)} />
+                    <input
+                        type="number"
+                        placeholder="Enter Latitude"
+                        value={latitude}
+                        onChange={(e) => setLatitude(e.target.value)} />
+                    <button className='addPointsButton'>Add Points</button>
+                    {
+                        // This is where shape and color will be selected later
+                    }
+                    {/* <button className='addPictureButton' onClick={handlePicture}>Add Picture</button> */}
+                    <h4>Upload an image</h4>
+                    <img className='locImg' src={locImg} />
+                    {/* {<UploadLocImg locName={locName} setLocImg={setLocImg} />} */}
+                    <input type="file" onChange={handleImageUpload} />
+                    <input
+                        type="text"
+                        placeholder="Enter Links (comma separated)"
+                        value={locLinks}
+                        onChange={(e) => setLocLinks(e.target.value)}
+                    />
+                    <button className='updateLocationButton' onClick={handleUpdateLocation}>Update Location</button>
+                </form>
             </div>
             <div className="map">
                 <MapContainer className="mapContainer"

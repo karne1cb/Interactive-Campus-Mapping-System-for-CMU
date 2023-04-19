@@ -26,3 +26,9 @@
     width: 70vw;
     height: 100vh;
 }
+
+.locImg {
+    width: 30vw;
+    height: 30vh;
+    object-fit: cover;
+}
