@@ -1,13 +1,13 @@
 :root {
-    --sideNavBarWidth: 300px;
-    --showNavBarWidthClosed: 30px;
-    --showNavBarWidthOpen: var(--sideNavBarWidth)+var(--showNavBarWidthClosed);
+    --maxWidth: 340px;
+    --closedWidth: 30px;
+    --showNavBarWidthOpen: var(--maxWidth)+var(--closedWidth);
     --searchResultsHeight: 60vh;
 }
 
 .locationResult {
     position: absolute;
-    width: var(--sideNavBarWidth);
+    width: var(--maxWidth);
     height: 100vh;
     background-color: white;
     z-index: 4;
@@ -32,7 +32,7 @@
     position: absolute;
     width: fit-content;
     right: 0;
-    width: var(--sideNavBarWidth);
+    width: var(--maxWidth);
     padding-right: 0px;
     z-index: 3;
     word-wrap: break-word;

@@ -95,6 +95,7 @@ export default function EditLocation() {
             setLocName(data.name);
             setLocDesc(data.desc);
             setLongitude(data.lon);
+            centerLoc = [data.lat, data.lon];
             setLatitude(data.lat);
             setLocAddress(data.address);
             setIsBuilding(data.isBuilding);
@@ -212,9 +213,9 @@ export default function EditLocation() {
                     // This is where shape and color will be selected later
                 }
                 {/* <button className='addPictureButton' onClick={handlePicture}>Add Picture</button> */}
-                <h4>Upload an image</h4>
+                {/* <h4>Upload an image</h4>
                     <img src={'/img_uploads/boom2.jpg'}/>
-                    <UploadLocImg/>
+                    <UploadLocImg/> */}
                 <input
                     type="text"
                     placeholder="Enter Links (comma separated)"

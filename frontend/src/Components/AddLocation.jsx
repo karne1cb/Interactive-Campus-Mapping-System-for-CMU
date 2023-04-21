@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthService from './AuthService';
 import LocationService from './LocationService.jsx';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMapEvents } from 'react-leaflet';
 import '../CSS/RequestAddLocation.css';
@@ -85,7 +84,7 @@ export default function AddLocation() {
             }
         });
         return (
-            <Marker position={[latitude,longitude]}>
+            <Marker position={[latitude, longitude]}>
                 <Popup>
                     <h3>Current Position</h3>
                 </Popup>
@@ -186,22 +185,20 @@ export default function AddLocation() {
                 />
                 <button className='addLocationButton' onClick={handleAddLocation}>Add Location</button>
             </div>
-            <div className="map">
-                <MapContainer className="mapContainer"
-                    center={centerLoc}
-                    zoom={defaultZoom}
-                    scrollWheelZoom={true}
-                    zoomControl={false}
-                    ref={setMap}
-                    >
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <ZoomControl position={zoomControlPosition} />
-                    <HandleMapClick/>
-                </MapContainer>
-            </div>
+            <MapContainer className="mapContainer"
+                center={centerLoc}
+                zoom={defaultZoom}
+                scrollWheelZoom={true}
+                zoomControl={false}
+                ref={setMap}
+            >
+                <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <ZoomControl position={zoomControlPosition} />
+                <HandleMapClick />
+            </MapContainer>
         </>
     );
 }

@@ -10,8 +10,9 @@
   width: var(--sideNavBarWidth);
   height: 100vh;
   background-color: white;
-  z-index: 3;
+  z-index: 2;
   transition: width 0.5s ease-in-out;
+  box-shadow: 0 1px 2px rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
 }
 
 .sideNavBarClosed {
@@ -19,8 +20,9 @@
   width: 0;
   height: 100vh;
   background-color: white;
-  z-index: 3;
+  z-index: 2;
   transition: width 0.5s ease-in-out;
+  box-shadow: 0 1px 2px rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
 }
 
 .logged-in {
@@ -29,7 +31,7 @@
   right: 0;
   width: var(--sideNavBarWidth);
   padding-right: 0px;
-  z-index: 3;
+  z-index: 2;
 }
 
 .logged-inElements button {
@@ -62,29 +64,35 @@
 
 .showSideNavBar {
   position: absolute;
-  padding-left: var(--sideNavBarWidth);
+  left: var(--sideNavBarWidth);
+  top: 25vh;
   width: var(--showNavBarWidthOpen);
   height: 30px;
-  background-color: white;
-  z-index: 2;
-  transition: padding-left 0.5s ease-in-out;
+  background: transparent;
+  z-index: 3;
+  transition: left 0.5s ease-in-out;
 }
 
 .showSideNavBarClosed {
   position: absolute;
-  padding-left: 0vw;
+  left: 0vw;
   width: var(--showNavBarWidthClosed);
+  top: 25vh;
   height: 30px;
-  background-color: white;
-  z-index: 2;
-  transition: padding-left 0.5s ease-in-out;
+  background: transparent;
+  z-index: 3;
+  transition: left 0.5s ease-in-out;
+}
+
+#openTab{
+  opacity: 1;
 }
 
 .otherButtons {
   position: absolute;
   right: 25%;
   bottom: 50px;
-  z-index: 3;
+  z-index: 2;
 }
 
 .otherButtons button {

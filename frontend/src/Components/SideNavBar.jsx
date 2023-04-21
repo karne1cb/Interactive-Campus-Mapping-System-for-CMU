@@ -68,7 +68,8 @@ export default function NavBar(props) {
     return (
         <div>
             <div className={open ? 'showSideNavBar' : 'showSideNavBarClosed'}>
-                <button onClick={toggleSideNav}>Hide</button>
+                {/* <button onClick={toggleSideNav}>Hide</button> */}
+                <img id='openTab' src="opentab.png" alt="logo" onClick={toggleSideNav} />
             </div>
             <div className={open ? 'sideNavBar' : 'sideNavBarClosed'}>
                 {loggedIn ? (
