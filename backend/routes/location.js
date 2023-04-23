@@ -74,11 +74,8 @@ router.post('/', authCheck, adminCheck, (req, res) => {
         color: req.body.color,
         locImg: req.body.locImg,
         isBuilding: req.body.isBuilding,
-        buildingId: req.body.buildingId,
         isInBuilding: req.body.isInBuilding,
-        inBuildingId: req.body.inBuildingId,
-        floor: req.body.floor,
-        roomLoc: req.body.roomLoc,
+        floorPlanLoc: req.body.floorPlanLoc,
         links: req.body.links,
         orgRequestor: req.body.orgRequestor
     });
@@ -107,11 +104,7 @@ router.put('/:id', authCheck, adminCheck, (req, res) => {
             location.color = req.body.color;
             location.locImg = req.body.locImg;
             location.isBuilding = req.body.isBuilding;
-            location.buildingId = req.body.buildingId;
-            location.isInBuilding = req.body.isInBuilding;
-            location.inBuildingId = req.body.inBuildingId;
-            location.floor = req.body.floor;
-            location.roomLoc = req.body.roomLoc;
+            location.floorPlanLoc = req.body.floorPlanLoc;
             location.links = req.body.links;
             location.orgRequestor = req.body.orgRequestor;
 

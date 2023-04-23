@@ -6,7 +6,6 @@
 const mongoose = require('mongoose');
 
 const LocationImageSchema = new mongoose.Schema({
-    locId: {type: String, required: true}, // location id (mongoose id)
     img: {type: String, required: true}, // base64 image
 });
 

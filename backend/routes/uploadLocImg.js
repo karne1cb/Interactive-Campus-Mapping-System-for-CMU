@@ -1,30 +1,60 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
 var path = require('path');
 
-const imgUploadPath = path.join(__dirname, '../img_uploads/');
+const Location = require('../models/Location');
+const LocationImage = require('../models/LocationImage');
+const authCheck = require('../authCheck');
+const adminCheck = require('../adminCheck');
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, imgUploadPath);
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname.replace(" ", ""));
-    }
+/* @route   GET /image/:id
+* @desc    Get a location image by id
+* @access  Public
+*/
+
+router.get('/:id', (req, res) => {
+    LocationImage.findById(req.params.id)
+        .then(locationImage => res.send(locationImage))
+        .catch(err => res.status(404).json({success: false}));
 });
 
-const upload = multer({ storage: storage }); // TODO: maybe add a limit in production
+/* @route   POST /image
+* @desc    Create a new location image
+* @access  Private
+*/
 
-// TODO: Add authentication (depends on if locationrequest is implemented or not)
-router.post('/', upload.single('image'), (req, res) => {
-    console.log(req.file);
-    if (!req.file) {
-        res.status(400).send("Error: No file uploaded");
-    } else {
-        res.status(200).send(req.file.filename);
-    }
-    
+router.post('/', authCheck, adminCheck, (req, res) => {
+    const newLocationImage = new LocationImage({
+        img: req.body.img
+    });
+
+    newLocationImage.save()
+        .then(locationImage => res.json(locationImage))
+        .catch(err => res.status(404).json({success: false}));
+});
+
+/* @route   PUT /image/:id
+* @desc    Update a location image by id
+* @access  Private
+*/
+
+router.put('/:id', authCheck, adminCheck, (req, res) => {
+    LocationImage.findById(req.params.id)
+        .then(locationImage => {
+            locationImage.img = req.body.img;
+        })
+        .catch(err => res.status(404).json({success: false}));
+});
+
+/* @route   DELETE /image/:id
+* @desc    Delete a location image by id
+* @access  Private
+*/
+
+router.delete('/:id', authCheck, adminCheck, (req, res) => {
+    LocationImage.findById(req.params.id)
+        .then(locationImage => locationImage.remove().then(() => res.json({success: true})))
+        .catch(err => res.status(404).json({success: false}));
 });
 
 module.exports = router;

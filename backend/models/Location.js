@@ -13,7 +13,7 @@ const LocationSchema = new mongoose.Schema({
     adress: {type: String, required: false},
     shape: {type: String, required: true},
     color: {type: String, required: true},
-    //locImg: {type: String, required: true}, // Now in LocationImage.js
+    locImg: {type: String, required: true}, // ID of the location image
     isBuilding: {type: Boolean, required: true},
     floorPlanLoc: {type: String, required: false}, // floorPlanLoc: only required if isBuilding is true and hasFloorPlan is true;
     links: [{type: String, required: true}], // array of links to other locations
