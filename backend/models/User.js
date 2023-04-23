@@ -5,7 +5,7 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const saltRounds = 10; // Not sure what this does rn...
+const saltRounds = 10; // Salt rounds for bcrypt
 
 const UserSchema = new mongoose.Schema({
     fName: {type: String, required: true},
@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema({
     favLocs: [{type: String, required: true}]
 })
 
-// This function hasehs the password before saving it to the database
+// This function hashes the password before saving it to the database
 UserSchema.pre('save', function(next) {
   // Check if document is new or a new password has been set
   if (this.isNew || this.isModified('password')) {

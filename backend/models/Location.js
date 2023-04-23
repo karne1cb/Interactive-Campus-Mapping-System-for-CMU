@@ -13,14 +13,9 @@ const LocationSchema = new mongoose.Schema({
     adress: {type: String, required: false},
     shape: {type: String, required: true},
     color: {type: String, required: true},
-    locImg: {type: String, required: true}, // image url/uri
+    //locImg: {type: String, required: true}, // Now in LocationImage.js
     isBuilding: {type: Boolean, required: true},
-    hasFloorPlan: {type: String, required: false}, // hasFloorPlan: only required if isBuilding is true;
     floorPlanLoc: {type: String, required: false}, // floorPlanLoc: only required if isBuilding is true and hasFloorPlan is true;
-    isInBuilding: {type: Boolean, required: true}, // is this location inside a building?
-    inBuildingId: {type: String, required: false}, // building id: only required if isInBuilding is true
-    floor: {type: Number, required: false}, // floor number: only required if isInBuilding is true
-    roomLoc: {type: String, required: false}, // room location: only required if isInBuilding is true
     links: [{type: String, required: true}], // array of links to other locations
     orgRequestor: {type: String, required: true}, // original person that requested this location
 });
