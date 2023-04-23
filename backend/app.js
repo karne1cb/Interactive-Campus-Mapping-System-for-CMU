@@ -16,7 +16,7 @@ const testAPIRouter = require("./routes/testAPI");
 const loginRouter = require("./routes/login");
 const locationRouter = require("./routes/location");
 const mapdirectionRouter = require("./routes/mapdirection");
-const uploadLocImgRouter = require("./routes/uploadLocImg");
+const locImgRouter = require("./routes/locImage");
 
 // Database connection
 const mongoose = require("mongoose");
@@ -43,7 +43,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 //makes the dataflow in JSON
-app.use(express.json());
+app.use(express.json({limit: '8mb'})); //increases the limit of the dataflow
+app.use(express.urlencoded({limit: '8mb'})); //increases the limit of the dataflow
 
 // Set up routers
 app.use('/', indexRouter);
@@ -51,7 +52,7 @@ app.use("/testAPI", testAPIRouter);
 app.use('/login', loginRouter);
 app.use('/location', locationRouter);
 app.use('/directions', mapdirectionRouter);
-app.use('/uploadLocImg', uploadLocImgRouter);
+app.use('/locImg', locImgRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

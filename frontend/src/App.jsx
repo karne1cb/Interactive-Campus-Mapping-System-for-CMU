@@ -8,7 +8,6 @@ import RequestLocation from './Components/RequestLocation';
 import RemoveLocation from './Components/RemoveLocation';
 import AddLocation from './Components/AddLocation';
 import EditLocation from './Components/EditLocation';
-import UploadLocImg from './Components/UploadLocImg';
 
 
 function App() {
@@ -24,7 +23,6 @@ function App() {
           <Route exact path="/RemoveLoc" element={<RemoveLocation />} />
           <Route exact path="/AddLoc" element={<AddLocation />} />
           <Route exact path="/EditLoc/*" element={<EditLocation/>} />
-          <Route exact path="/upimgtest/*" element={<UploadLocImg/>} />
           <Route exact path="" element={<Navigate to="/map"/>}/> {/* Redirect to map if no path is specified */}
         </Routes>
       </div>

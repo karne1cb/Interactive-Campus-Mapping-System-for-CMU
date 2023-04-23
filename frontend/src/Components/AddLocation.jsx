@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LocationService from './LocationService.jsx';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMapEvents } from 'react-leaflet';
+import LocImgService from './LocImgService.jsx';
 import '../CSS/RequestAddLocation.css';
 
 export default function AddLocation() {
@@ -26,23 +27,20 @@ export default function AddLocation() {
     const [locAddress, setLocAddress] = useState('');
 
     const [isBuilding, setIsBuilding] = useState(false);
-    const [isBuildingName, setIsBuildingName] = useState('');
-    const [isInBuildingName, setIsInBuildingName] = useState('');
+    const [floorPlanLoc, setFloorPlanLoc] = useState('');
 
-    const [isInBuilding, setIsInBuilding] = useState(false);
-    const [roomNum, setRoomNum] = useState('');
-    const [floorNum, setFloorNum] = useState('');
+    const [longitude, setLongitude] = useState(0);
+    const [latitude, setLatitude] = useState(0);
 
-    const [longitude, setLongitude] = useState('');
-    const [latitude, setLatitude] = useState('');
-
-    const [locLinks, setLocLinks] = useState([]);
+    const [locImgID, setLocImgID] = useState('');
+    const [locImg, setLocImg] = useState('');
+    const [locLinks, setLocLinks] = useState(['']);
 
     const navigate = useNavigate();
 
     // Changes where the zoom and zoom out buttons are located
     const zoomControlPosition = 'bottomright';
-    var centerLoc = [43.5915541973643, -84.77518008037302];
+    const [centerLoc, setCenterLoc] = useState([43.5915541973643, -84.77518008037302]);
     var defaultZoom = 17;
     const [map, setMap] = useState(null); // State to grab the map
 
@@ -52,26 +50,73 @@ export default function AddLocation() {
         setIsBuilding(!isBuilding);
     };
 
-    // Event that handles if the location is in a building or not
-    const handleIsInBuilding = () => {
-        setIsInBuilding(!isInBuilding);
-    };
     //.replace('\\s', ).split(',') handles when the user enters a list of links
 
-    const handleAddLocation = () => {
+    const handleAddLocation = async () => {
         console.log("Adding location...");
-        LocationService.addLocation(locName, locDesc, longitude, latitude, locAddress, isBuilding, isBuildingName,
-            isInBuilding, isInBuildingName, floorNum, roomNum, locLinks).then((res) => {
-                // Log the sent request
-                console.log("Status: " + res);
-                if (res === 200) {
-                    alert("Location added successfully!");
-                    // Navigate to the home page
-                    navigate('/');
-                } else {
-                    alert("Error adding location");
-                }
-            });
+        const imgID = await handleAddingLocImg(); // Update the image first
+        if (imgID === null) {
+            console.log("Image Error");
+            return;
+        }
+        setLocImgID(imgID); // probably doesn't work still
+        console.log(locImgID);
+        try {
+            const res = await LocationService.addLocation(locName, locDesc, longitude, latitude, locAddress, imgID, isBuilding, floorPlanLoc, locLinks);
+            console.log("Status: " + res);
+            if (res === 200) {
+                alert("Location added successfully!");
+                navigate('/');
+            } else {
+                alert("Error adding location");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Error adding location");
+        }
+    };
+
+    const handleAddingLocImg = async () => {
+        console.log("Uploading image...");
+        // Update the image first
+        var imgID = locImgID;
+        console.log(imgID);
+
+        try {
+            const res = await LocImgService.addImage(locImg);
+            imgID = res.data._id; // Set the locImgID to the new image id
+            if (res.status === 200) {
+                console.log("Image added successfully!");
+            } else {
+                alert("Error adding image");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Error adding image");
+            return null;
+        }
+
+        return imgID;
+    };
+
+    const handleImage = () => {
+        console.log("Adding picture...");
+        
+        // Change image into a base64 string
+        const file = document.querySelector('input[type=file]').files[0];
+        // Fist, make sure file is not too large
+        if (file.size > 8000000) {
+            alert("File is too large. Please choose a file that is less than 8MB.");
+            return;
+        }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            setLocImg(reader.result);
+        };
+        reader.onerror = (error) => {
+            console.log('Error: ', error);
+        };
     };
 
     // Event that handles when the user clicks on the map (pins a location)
@@ -92,10 +137,18 @@ export default function AddLocation() {
         );
     };
 
+    // Event that handles when an image load error occurs
+    const handleImageError = (e) => {
+        // regex to remove everything after the last slash so that the if statement can work (if the image is not found, it will be replaced with the noimage.png image)
+        const testStr = e.target.src.replace(/.*\//, '');
+        if (testStr != 'noimage.png') e.target.src = '/images/noimage.png';
+        console.log(e.target.src)
+    };
+
     return (
         <>
-            <div className="requestLocation">
-                <h1>Add Location</h1>
+            <div className="locationForm">
+                <h1>Edit Location</h1>
                 <input
                     type="text"
                     placeholder="Enter Location Name"
@@ -116,52 +169,20 @@ export default function AddLocation() {
                     type="checkbox"
                     id="isBuilding"
                     name="isBuilding"
-                    value="isBuilding"
-                    hidden={isInBuilding}
+                    defaultChecked={isBuilding}
                     onClick={(e) => handleIsBuilding(e.target.value)}
                 />
-                <label hidden={isInBuilding}> Is this a building? </label>
-                {isBuilding & !isInBuilding ? (
+                <label> Is this a building? </label>
+                {isBuilding ? (
                     <>
                         <input
                             type="text"
-                            placeholder="Enter Building Name"
-                            value={isBuildingName}
-                            onChange={(e) => setIsBuildingName(e.target.value)}
+                            placeholder="Enter Floor Plan Link"
+                            value={floorPlanLoc}
+                            onChange={(e) => setFloorPlanLoc(e.target.value)}
                         />
                     </>
                 ) : null}
-                <input
-                    type="checkbox"
-                    id="isInBuilding"
-                    name="isInBuilding"
-                    value="isInBuilding"
-                    hidden={isBuilding}
-                    onClick={(e) => handleIsInBuilding(e.target.value)}
-                />
-                <label hidden={isBuilding}> Is this inside of a building? </label>
-                {isInBuilding & !isBuilding ? (<>
-                    <input type="text"
-                        placeholder="Enter Room Building Name"
-                        value={isInBuildingName}
-                        onChange={(e) => setIsInBuildingName(e.target.value)}
-                    />
-                    <input type="text"
-                        placeholder="Enter Room Number"
-                        value={roomNum}
-                        onChange={(e) => setRoomNum(e.target.value)}
-                    />
-                    <input
-                        type="number"
-                        placeholder="Enter Floor Number"
-                        value={floorNum}
-                        onChange={(e) => setFloorNum(e.target.value)}
-                    />
-                </>
-                ) : null}
-                <button className='pinLocationButton'>Pin Location</button>
-                {// placeholder input that allows direct longitude and latitude input
-                }
                 <input
                     type="number"
                     placeholder="Enter Longitude"
@@ -172,11 +193,17 @@ export default function AddLocation() {
                     placeholder="Enter Latitude"
                     value={latitude}
                     onChange={(e) => setLatitude(e.target.value)} />
-                <button className='addPointsButton'>Add Points</button>
+                <button className='gotoLoc' onClick={() => { map.flyTo(centerLoc) }}>Goto pin</button>
                 {
                     // This is where shape and color will be selected later
                 }
-                <button className='addPictureButton'>Add Picture</button>
+                <img id="locImg" src={locImg} onError={handleImageError} />
+                <input
+                    type="file"
+                    placeholder="Enter Location Image"
+                    onChange={(e) => handleImage(e.target.value)}
+                />
+
                 <input
                     type="text"
                     placeholder="Enter Links (comma separated)"
@@ -185,20 +212,22 @@ export default function AddLocation() {
                 />
                 <button className='addLocationButton' onClick={handleAddLocation}>Add Location</button>
             </div>
-            <MapContainer className="mapContainer"
-                center={centerLoc}
-                zoom={defaultZoom}
-                scrollWheelZoom={true}
-                zoomControl={false}
-                ref={setMap}
-            >
-                <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <ZoomControl position={zoomControlPosition} />
-                <HandleMapClick />
-            </MapContainer>
+            <div className="map">
+                <MapContainer className="mapContainer"
+                    center={centerLoc}
+                    zoom={defaultZoom}
+                    scrollWheelZoom={true}
+                    zoomControl={false}
+                    ref={setMap}
+                >
+                    <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <ZoomControl position={zoomControlPosition} />
+                    <HandleMapClick />
+                </MapContainer>
+            </div>
         </>
     );
 }

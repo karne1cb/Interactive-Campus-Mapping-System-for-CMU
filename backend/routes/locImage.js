@@ -29,7 +29,7 @@ router.post('/', authCheck, adminCheck, (req, res) => {
     });
 
     newLocationImage.save()
-        .then(locationImage => res.json(locationImage))
+        .then(locationImage => res.status(200).send(locationImage._id))
         .catch(err => res.status(404).json({success: false}));
 });
 

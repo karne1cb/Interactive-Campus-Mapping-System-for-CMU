@@ -2,44 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AuthService from './AuthService';
 import LocationService from './LocationService.jsx';
-import UploadLocImg from './UploadLocImg';
+import LocImgService from './LocImgService';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMapEvents } from 'react-leaflet';
 import '../CSS/RequestAddLocation.css';
 
 export default function EditLocation() {
 
     /*
-    * This component is used to add a location to be added to the map
-    * It will be a popup that will appear when the user clicks the button
-    * on the side nav bar
-    * It will have a text boxes for the user to enter the location name, description, and address (if applicable)
-    * There also is a checkbox to select if the location is a building or not
-    * If the location is a building, there will be more text boxes for the building name, room number, and floor number.
-    * Then, there will be buttons that'll allow the user to pin where the location is on the map (get longitude and latitude)
-    * Also, there'll be a button to add points on the map to outline the location
-    * There will be a button to add a picture of the location (not implemented in the DB yet)
-    * There will be a button to add links to websites about the location
-    * Finally, there is a button to submit the request
-    * The request will be sent to the backend and will be added to the database
-    * The location will be added to the map once it is approved by an admin
+    * This component is used to edit a location on the map
     * */
     const [locName, setLocName] = useState('');
     const [locDesc, setLocDesc] = useState('');
     const [locAddress, setLocAddress] = useState('');
 
     const [isBuilding, setIsBuilding] = useState(false);
-    const [isBuildingName, setIsBuildingName] = useState('');
-    const [isInBuildingName, setIsInBuildingName] = useState('');
+    const [floorPlanLoc, setFloorPlanLoc] = useState('');
 
-    const [isInBuilding, setIsInBuilding] = useState(false);
-    const [roomNum, setRoomNum] = useState('');
-    const [floorNum, setFloorNum] = useState('');
+    const [longitude, setLongitude] = useState(0);
+    const [latitude, setLatitude] = useState(0);
 
-    const [longitude, setLongitude] = useState('');
-    const [latitude, setLatitude] = useState('');
-
+    const [locImgID, setLocImgID] = useState('');
     const [locImg, setLocImg] = useState('');
-    const [locLinks, setLocLinks] = useState([]);
+    const [locLinks, setLocLinks] = useState(['']);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -47,7 +31,7 @@ export default function EditLocation() {
 
     // Changes where the zoom and zoom out buttons are located
     const zoomControlPosition = 'bottomright';
-    var centerLoc = [43.5915541973643, -84.77518008037302];
+    const [centerLoc, setCenterLoc] = useState([43.5915541973643, -84.77518008037302]);
     var defaultZoom = 17;
     const [map, setMap] = useState(null); // State to grab the map
     const regexId = /\/EditLoc\/(.*)/;
@@ -59,29 +43,88 @@ export default function EditLocation() {
         setIsBuilding(!isBuilding);
     };
 
-    // Event that handles if the location is in a building or not
-    const handleIsInBuilding = () => {
-        setIsInBuilding(!isInBuilding);
-    };
     //.replace('\\s', ).split(',') handles when the user enters a list of links
 
-    const handleUpdateLocation = () => {
+    const handleUpdateLocation = async () => {
         console.log("Updating location...");
-        LocationService.updateLocation(lId, locName, locDesc, longitude, latitude, locAddress, isBuilding, isBuildingName,
-            isInBuilding, isInBuildingName, floorNum, roomNum, locLinks).then((res) => {
-                // Log the sent request
+        const imgID = await handleUpdateLocImg(); // Update the image first
+        if (imgID === null) {
+            console.log("Image Error");
+            return;
+        }
+        setLocImgID(imgID); // probably doesn't work still
+        console.log(locImgID);
+        try {
+            const res = await LocationService.updateLocation(lId, locName, locDesc, longitude, latitude, locAddress, imgID, isBuilding, floorPlanLoc, locLinks);
+            console.log("Status: " + res);
+            if (res === 200) {
+                alert("Location updated successfully!");
+                navigate('/');
+            } else {
+                alert("Error updating location");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Error updating location");
+        }
+    };
+
+    const handleUpdateLocImg = async () => {
+        console.log("Uploading image...");
+        // Update the image first
+        var imgID = locImgID;
+        console.log(imgID);
+        if (imgID == "" || imgID == null || imgID == " ") {
+            try {
+                const res = await LocImgService.addImage(locImg);
+                imgID = res.data._id; // Set the locImgID to the new image id
+                if (res.status === 200) {
+                    console.log("Image added successfully!");
+                } else {
+                    alert("Error adding image");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Error adding image");
+                return null;
+            }
+        }
+        // Else, update the image
+        else {
+            try {
+                const res = await LocImgService.updateImage(imgID, locImg);
                 console.log("Status: " + res);
                 if (res === 200) {
-                    alert("Location updated successfully!");
-                    // Navigate to the home page
-                    navigate('/');
+                    console.log("Image updated successfully!");
                 } else {
-                    alert("Error updating location");
+                    alert("Error updating image");
                 }
-            });
+            } catch (error) {
+                console.error(error);
+                alert("Error updating image");
+            }
+        }
+        return imgID;
     };
-    const handlePicture = () => {
+
+    const handleImage = () => {
         console.log("Adding picture...");
+        
+        // Change image into a base64 string
+        const file = document.querySelector('input[type=file]').files[0];
+        // Fist, make sure file is not too large
+        if (file.size > 8000000) {
+            alert("File is too large. Please choose a file that is less than 8MB");
+            return;
+        }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            setLocImg(reader.result);
+        };
+        reader.onerror = (error) => {
+            console.log('Error: ', error);
+        };
     };
 
     //Get the location data from the backend on when the page is first loaded
@@ -95,19 +138,27 @@ export default function EditLocation() {
             setLocName(data.name);
             setLocDesc(data.desc);
             setLongitude(data.lon);
-            centerLoc = [data.lat, data.lon];
+            setCenterLoc([data.lat, data.lon]);
             setLatitude(data.lat);
             setLocAddress(data.address);
+            setLocImgID(data.locImg);
             setIsBuilding(data.isBuilding);
-            setIsBuildingName(data.buildingName);
-            setIsInBuilding(data.isInBuilding);
-            setIsInBuildingName(data.buildingName);
-            setFloorNum(data.floorNum);
-            setRoomNum(data.roomNum);
+            setFloorPlanLoc(data.floorPlanLoc);
             setLocLinks(data.links);
-            setLocImg(data.locImg);
+            // Get the image
+            console.log(locImgID);
+            if (locImgID !== '' || locImgID !== ' ') {
+                LocImgService.getImage(locImgID).then((data) => {
+                    if (data === null || data === undefined || data === '') {
+                        console.log("Error getting location image");
+                        return;
+                    }
+                    setLocImg(data.img);
+                });
+            }
         });
-    }, []);
+
+    }, [lId, setLocName, setLocDesc, setLongitude, setCenterLoc, setLatitude, setLocAddress, setLocImgID, setIsBuilding, setFloorPlanLoc, setLocLinks, locImgID]);
 
 
     // Event that handles when the user clicks on the map (pins a location)
@@ -128,9 +179,17 @@ export default function EditLocation() {
         );
     };
 
+    // Event that handles when an image load error occurs
+    const handleImageError = (e) => {
+        // regex to remove everything after the last slash so that the if statement can work (if the image is not found, it will be replaced with the noimage.png image)
+        const testStr = e.target.src.replace(/.*\//, '');
+        if (testStr != 'noimage.png') e.target.src = '/images/noimage.png';
+        console.log(e.target.src)
+    };
+
     return (
         <>
-            <div className="requestLocation">
+            <div className="locationForm">
                 <h1>Edit Location</h1>
                 <input
                     type="text"
@@ -152,52 +211,20 @@ export default function EditLocation() {
                     type="checkbox"
                     id="isBuilding"
                     name="isBuilding"
-                    value="isBuilding"
-                    hidden={isInBuilding}
+                    defaultChecked={!isBuilding}
                     onClick={(e) => handleIsBuilding(e.target.value)}
                 />
-                <label hidden={isInBuilding}> Is this a building? </label>
-                {isBuilding & !isInBuilding ? (
+                <label> Is this a building? </label>
+                {isBuilding ? (
                     <>
                         <input
                             type="text"
-                            placeholder="Enter Building Name"
-                            value={isBuildingName}
-                            onChange={(e) => setIsBuildingName(e.target.value)}
+                            placeholder="Enter Floor Plan Link"
+                            value={floorPlanLoc}
+                            onChange={(e) => setFloorPlanLoc(e.target.value)}
                         />
                     </>
                 ) : null}
-                <input
-                    type="checkbox"
-                    id="isInBuilding"
-                    name="isInBuilding"
-                    value="isInBuilding"
-                    hidden={isBuilding}
-                    onClick={(e) => handleIsInBuilding(e.target.value)}
-                />
-                <label hidden={isBuilding}> Is this inside of a building? </label>
-                {isInBuilding & !isBuilding ? (<>
-                    <input type="text"
-                        placeholder="Enter Room Building Name"
-                        value={isInBuildingName}
-                        onChange={(e) => setIsInBuildingName(e.target.value)}
-                    />
-                    <input type="text"
-                        placeholder="Enter Room Number"
-                        value={roomNum}
-                        onChange={(e) => setRoomNum(e.target.value)}
-                    />
-                    <input
-                        type="number"
-                        placeholder="Enter Floor Number"
-                        value={floorNum}
-                        onChange={(e) => setFloorNum(e.target.value)}
-                    />
-                </>
-                ) : null}
-                <button className='pinLocationButton'>Pin Location</button>
-                {// placeholder input that allows direct longitude and latitude input
-                }
                 <input
                     type="number"
                     placeholder="Enter Longitude"
@@ -208,14 +235,17 @@ export default function EditLocation() {
                     placeholder="Enter Latitude"
                     value={latitude}
                     onChange={(e) => setLatitude(e.target.value)} />
-                <button className='addPointsButton'>Add Points</button>
+                <button className='gotoLoc' onClick={() => { map.flyTo(centerLoc) }}>Goto pin</button>
                 {
                     // This is where shape and color will be selected later
                 }
-                {/* <button className='addPictureButton' onClick={handlePicture}>Add Picture</button> */}
-                {/* <h4>Upload an image</h4>
-                    <img src={'/img_uploads/boom2.jpg'}/>
-                    <UploadLocImg/> */}
+                <img id="locImg" src={locImg} onError={handleImageError} />
+                <input
+                    type="file"
+                    placeholder="Enter Location Image"
+                    onChange={(e) => handleImage(e.target.value)}
+                />
+
                 <input
                     type="text"
                     placeholder="Enter Links (comma separated)"

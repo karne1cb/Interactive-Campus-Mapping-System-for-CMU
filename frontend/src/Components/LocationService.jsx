@@ -17,8 +17,8 @@ class LocationService {
    * @param {*} links 
    * @returns 
    */
-  addLocation(locName, locDesc, longitude, latitude, locAddress, isBuilding, floorPlanLoc, links) {
-    return axios
+  async addLocation(locName, locDesc, longitude, latitude, locAddress, locImg, isBuilding, floorPlanLoc, links) {
+    const response = await axios
       .post(API_URL + "location", {
         name: locName,
         desc: locDesc,
@@ -28,15 +28,13 @@ class LocationService {
         // Some default values for now...
         shape: "POINT",
         color: "red",
-        locImg: ' ', // Blank for now
+        locImg: locImg,
         isBuilding,
         floorPlanLoc: floorPlanLoc,
         links,
         orgRequestor: AuthService.getCurrentUser().globalId
-      }, { headers: AuthService.authHeader() })
-      .then(response => {
-        return response.status;
-      });
+      }, { headers: AuthService.authHeader() });
+    return response.status;
   }
 
   /**
@@ -44,22 +42,19 @@ class LocationService {
    * @param {*} locID 
    * @returns 
    */
-  deleteLocation(locID) {
-    return axios
+  async deleteLocation(locID) {
+    const response = await axios
       .delete(API_URL + "location/" + locID,
-      { headers: AuthService.authHeader() })
-      .then(response => {
-        return response.data;
-      });
+        { headers: AuthService.authHeader() });
+    return response.data;
   }
   /**
    * API to get all locations from the database
    * @returns 
    */
-  getLocations() {
-    return axios.get(API_URL + "location").then(response => {
-      return response.data;
-    });
+  async getLocations() {
+    const response = await axios.get(API_URL + "location");
+    return response.data;
   }
 
   /**
@@ -67,11 +62,9 @@ class LocationService {
    * @param {*} locID 
    * @returns 
    */
-  getLocation(locID) {
-    return axios.get(API_URL + "location/" + locID)
-    .then(response => {
-      return response.data;
-    });
+  async getLocation(locID) {
+    const response = await axios.get(API_URL + "location/" + locID);
+    return response.data;
   }
 
   /**
@@ -86,8 +79,8 @@ class LocationService {
    * @param {*} links 
    * @returns 
    */
-  updateLocation(locName, locDesc, longitude, latitude, locAddress, isBuilding, floorPlanLoc, links) {
-    return axios
+  async updateLocation(locID, locName, locDesc, longitude, latitude, locAddress, locImg, isBuilding, floorPlanLoc, links) {
+    const response = await axios
       .put(API_URL + "location/" + locID, {
         name: locName,
         desc: locDesc,
@@ -97,15 +90,13 @@ class LocationService {
         // Some default values for now...
         shape: "POINT",
         color: "red",
-        locImg: ' ', // Blank for now
+        locImg: locImg,
         isBuilding,
         floorPlanLoc: floorPlanLoc,
         links,
         orgRequestor: AuthService.getCurrentUser().globalId
-      }, { headers: AuthService.authHeader() })
-      .then(response => {
-        return response.status;
-      });
+      }, { headers: AuthService.authHeader() });
+    return response.status;
   }
 }
 

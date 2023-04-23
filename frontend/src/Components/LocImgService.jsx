@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import AuthService from "./AuthService";
 
 const API_URL = "http://localhost:9000/";
 
@@ -11,14 +12,26 @@ class LocImgService {
      * @returns
      * @memberof UploadLocImg 
      */
-    addImage(locImg) {
-        return axios
-            .post(API_URL + "uploadLocImg", {
-                locImg: locImg
-            })
-            .then(response => {
-                return response.status;
-            });
+    async addImage(locImg) {
+        const response = await axios
+            .post(API_URL + "locImg", {
+                img: locImg
+            }, { headers: AuthService.authHeader() });
+        return response;
+    }
+    
+    /**
+     * Updates an image in the database provided its ID
+     * @param {*} locImgID 
+     * @param {*} locImg 
+     * @returns 
+     */
+    async updateImage(locImgID, locImg) {
+        const response = await axios
+            .put(API_URL + "locImg/" + locImgID, {
+                img: locImg
+            }, { headers: AuthService.authHeader() });
+        return response.status;
     }
 
     /**
@@ -27,12 +40,10 @@ class LocImgService {
      * @returns
      * @memberof UploadLocImg
      */
-    deleteImage(locImgID) {
-        return axios
-            .delete(API_URL + "uploadLocImg/" + locImgID)
-            .then(response => {
-                return response.data;
-            });
+    async deleteImage(locImgID) {
+        const response = await axios
+            .delete(API_URL + "locImg/" + locImgID, { headers: AuthService.authHeader() });
+        return response.data;
     }
 
     /**
@@ -41,14 +52,12 @@ class LocImgService {
      * @returns
      * @memberof UploadLocImg
      */
-    getImage(locImgID) {
-        return axios.get(API_URL + "uploadLocImg/" + locImgID)
-            .then(response => {
-                return response.data;
-            });
+    async getImage(locImgID) {
+        const response = await axios.get(API_URL + "locImg/" + locImgID);
+        return response.data;
     }
 
 
 }
 
-export default LocImgService;
+export default new LocImgService;
