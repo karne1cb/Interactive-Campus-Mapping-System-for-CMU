@@ -4,15 +4,20 @@ import axios from "axios";
 const API_URL = "http://localhost:9000/";
 
 class LocationService {
-  /*
-    * This is where admins can add locations to the database
-    * This page will be accessed from the admin pmenu in the navbar
-    * This page will have a form that will allow the admin to enter the location's information
-    * The admin will then be prompted to confirm the addition
-    * If the admin confirms, the location will be added to the database
-    * FOR NOW THE shape, color and locImg WILL BE HARDCODED (TODO: CHANGE THIS)
+
+  /**
+   * API to add a location to the database
+   * @param {*} locName 
+   * @param {*} locDesc 
+   * @param {*} longitude 
+   * @param {*} latitude 
+   * @param {*} locAddress 
+   * @param {*} isBuilding 
+   * @param {*} floorPlanLoc 
+   * @param {*} links 
+   * @returns 
    */
-  addLocation(locName, locDesc, longitude, latitude, locAddress, isBuilding, buildingId, isInBuilding, inBuildingId, floorNum, roomNum, links) {
+  addLocation(locName, locDesc, longitude, latitude, locAddress, isBuilding, floorPlanLoc, links) {
     return axios
       .post(API_URL + "location", {
         name: locName,
@@ -25,11 +30,7 @@ class LocationService {
         color: "red",
         locImg: ' ', // Blank for now
         isBuilding,
-        buildingId,
-        isInBuilding,
-        inBuildingId,
-        floor: floorNum,
-        roomLoc: roomNum,
+        floorPlanLoc: floorPlanLoc,
         links,
         orgRequestor: AuthService.getCurrentUser().globalId
       }, { headers: AuthService.authHeader() })
@@ -38,6 +39,11 @@ class LocationService {
       });
   }
 
+  /**
+   * API to delete a location from the database provided its ID
+   * @param {*} locID 
+   * @returns 
+   */
   deleteLocation(locID) {
     return axios
       .delete(API_URL + "location/" + locID,
@@ -46,13 +52,21 @@ class LocationService {
         return response.data;
       });
   }
-
+  /**
+   * API to get all locations from the database
+   * @returns 
+   */
   getLocations() {
     return axios.get(API_URL + "location").then(response => {
       return response.data;
     });
   }
 
+  /**
+   * API to get a single location from the database provided its ID
+   * @param {*} locID 
+   * @returns 
+   */
   getLocation(locID) {
     return axios.get(API_URL + "location/" + locID)
     .then(response => {
@@ -60,7 +74,19 @@ class LocationService {
     });
   }
 
-  updateLocation(locID, locName, locDesc, longitude, latitude, locAddress, isBuilding, buildingId, isInBuilding, inBuildingId, floorNum, roomNum, links) {
+  /**
+   * API to update a location in the database provided its ID
+   * @param {*} locName 
+   * @param {*} locDesc 
+   * @param {*} longitude 
+   * @param {*} latitude 
+   * @param {*} locAddress 
+   * @param {*} isBuilding 
+   * @param {*} floorPlanLoc 
+   * @param {*} links 
+   * @returns 
+   */
+  updateLocation(locName, locDesc, longitude, latitude, locAddress, isBuilding, floorPlanLoc, links) {
     return axios
       .put(API_URL + "location/" + locID, {
         name: locName,
@@ -73,11 +99,7 @@ class LocationService {
         color: "red",
         locImg: ' ', // Blank for now
         isBuilding,
-        buildingId,
-        isInBuilding,
-        inBuildingId,
-        floor: floorNum,
-        roomLoc: roomNum,
+        floorPlanLoc: floorPlanLoc,
         links,
         orgRequestor: AuthService.getCurrentUser().globalId
       }, { headers: AuthService.authHeader() })
