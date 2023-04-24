@@ -7,11 +7,12 @@ import SearchBar from './SearchBar';
 
 export default function NavBar(props) {
     const [loggedIn, setLoggedIn] = useState(false);
+    const [fullName, setFullName] = useState('');
     const [globalId, setGlobalId] = useState('');
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const {navDestData} = props
+    const { navDestData } = props
     const { pathname } = location;
     const [isAdmin, setIsAdmin] = useState(false); // Might want to make sure this is fine to be here
 
@@ -37,11 +38,12 @@ export default function NavBar(props) {
 
     useEffect(() => {
         //wait a second to see if the user is logged in
-        
+
         const user = AuthService.getCurrentUser();
         if (user !== null) {
             setLoggedIn(true);
             setGlobalId(user.globalId);
+            setFullName(user.fName + ' ' + user.lName);
             isUserAdmin(); // Function here, since it was loading every time an action was taken
         } else {
             setLoggedIn(false);
@@ -76,20 +78,22 @@ export default function NavBar(props) {
                     <>
                         <div className="logged-in">
                             <div className="logged-inElements">
-                                <p>{globalId}</p>
-                                <button onClick={handleLogout}>Logout</button>
+                                <p>Welcome {fullName}!</p>
+                                <button className='navButton' onClick={handleLogout}>Logout</button>
                                 {/* This is where the favorites view will go (opens up over the nav bar*/}
-                                <button>Favorites</button>
+                                <button className='navButton'>Favorites</button>
                             </div>
                             <div className="search">
-                                    <SearchBar resultData={childToParent /* TODO: CHANGE THIS NAME */}/>
-                                </div>
+                                <SearchBar resultData={childToParent /* TODO: CHANGE THIS NAME */} />
+                            </div>
                         </div>
                         <div className="otherButtons">
+                            <div className="otherButtonsElements">
                             {/* This is where the admin tools will go (each will open a component over the navbar) */}
                             {isAdmin ? (
                                 <div>
                                     <button
+                                        className='navButton'
                                         onClick={
                                             () => {
                                                 navigate('/AddLoc');
@@ -98,19 +102,22 @@ export default function NavBar(props) {
                                     >Add Location</button>
                                 </div>
                             ) : (<div>
-                                <button onClick={
-                                    () => {
-                                        navigate('/RequestLocTest');
-                                    }
-                                }>Request Location</button>
+                                <button
+                                    className='navButton'
+                                    onClick={
+                                        () => {
+                                            navigate('/RequestLocTest');
+                                        }
+                                    }>Request Location</button>
                             </div>)
                             }
-                            <button>About</button>
+                            <button className='navButton'>About</button>
+                            </div>
                         </div>
                     </>
                 ) : (
                     <div className="notLoggedIn">
-                        <button onClick={handleLogin}>Login</button>
+                        <button className='navButton' onClick={handleLogin}>Login</button>
                     </div>
                 )}
             </div>

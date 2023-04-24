@@ -40,7 +40,7 @@ router.post('/', function (req, res) {
       });
     return;
   }
-  User.findOne({ globalId }, function (err, user) {
+  User.findOne({globalId }, function (err, user) {
     if (err) {
       console.error(err);
       res.status(500)
@@ -69,10 +69,12 @@ router.post('/', function (req, res) {
         } else {
           // Issue token
           const payload = { globalId };
+          const fName = user.fName;
+          const lName = user.lName;
           const token = jwt.sign(payload, secret, {
             expiresIn: '1h'
           });
-          res.status(200).send({ globalId, accessToken: token })
+          res.status(200).send({fName, lName, globalId, accessToken: token })
         }
       });
     }

@@ -88,7 +88,7 @@ export default function SearchBar(props) {
         <>
                 <div className='searchBar'>
                     <input
-                        className='destinationBar'
+                        className='directionsBar'
                         type="text"
                         placeholder="Destination"
                         value={destinationText}
@@ -101,7 +101,7 @@ export default function SearchBar(props) {
                         }
                         } />
                     <input
-                        className='locationBar'
+                        className='directionsBar'
                         type="text"
                         placeholder="Location"
                         value={locationText}
@@ -113,7 +113,6 @@ export default function SearchBar(props) {
                             }
                         }
                         } />
-                    <p>{String(locSearch)}</p>
                     {/* Adds a list of search results*/}
                     <div className='searchResults'>
                         {

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './CSS/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import './fonts/Lexend Deca/LexendDeca-VariableFont_wght.ttf';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
