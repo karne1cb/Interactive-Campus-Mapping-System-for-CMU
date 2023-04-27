@@ -5,6 +5,11 @@
 
 const mongoose = require('mongoose');
 
+const LinkSchema = new mongoose.Schema({
+    name: {type: String, required: true},
+    link: {type: String, required: true}
+});
+
 const LocationSchema = new mongoose.Schema({
     name: {type: String, required: true},
     desc: {type: String, required: true},
@@ -16,8 +21,8 @@ const LocationSchema = new mongoose.Schema({
     locImg: {type: String, required: true}, // ID of the location image
     isBuilding: {type: Boolean, required: true},
     floorPlanLoc: {type: String, required: false}, // floorPlanLoc: only required if isBuilding is true and hasFloorPlan is true;
-    links: [{type: String, required: true}], // array of links to other locations
-    orgRequestor: {type: String, required: true}, // original person that requested this location
+    links: [LinkSchema], // array of links to other locations
+    orgRequestor: {type: String, required: true} // original person that requested this location
 });
 
 module.exports = mongoose.model('Location', LocationSchema);

@@ -12,7 +12,6 @@ const cors = require('cors');
 
 // Router variables
 const indexRouter = require('./routes/index');
-const testAPIRouter = require("./routes/testAPI");
 const loginRouter = require("./routes/login");
 const locationRouter = require("./routes/location");
 const mapdirectionRouter = require("./routes/mapdirection");
@@ -48,7 +47,6 @@ app.use(express.urlencoded({limit: '8mb'})); //increases the limit of the datafl
 
 // Set up routers
 app.use('/', indexRouter);
-app.use("/testAPI", testAPIRouter);
 app.use('/login', loginRouter);
 app.use('/location', locationRouter);
 app.use('/directions', mapdirectionRouter);

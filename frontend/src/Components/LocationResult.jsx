@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from 'react';
+import { React, useEffect, useState, useRef } from 'react';
 import LocationService from './LocationService';
 import { useNavigate } from 'react-router';
 import AuthService from './AuthService';
@@ -50,22 +50,37 @@ export default function LocationResult(props) {
         else alert('Location not deleted');
     }
 
+    const handleLinks = () => {
+        if (locationData.links === null || locationData.links === undefined) return;
+        return locationData.links.map((link, index) => {
+            return (
+                <a className='locResText' key={index} id='link' href={link.link}>{link.name}</a>
+            );
+        });
+    }
+
     return (
         <div className={isOpen ? 'locationResult' : 'locationResultClosed'}>
-            <div className='results'>
-                <button className='closeButton' onClick={() => setIsOpen(false)}>X</button>
+            <div id='locationData'>
+                <button className='locResButton' id='closeButton' onClick={() => { setIsOpen(false) }}>X</button>
+                <img id='locImgRes' src={'img_uploads/' + locationData.locImg}></img>
                 <h3>{locationData.name}</h3>
-                <p>{locationData.desc}</p>
-                <p>{locationData.links}</p>
+                <p className='locResText' id='desc'>{locationData.desc}</p>
+                <div id='locationResLinkedText'>
+                    {handleLinks()}
+                    <a className='locResText' id='floorplan' href={locationData.floorPlanLoc}>Floor Plan</a>
+                </div>
             </div>
-            {
-                isAdmin ? (
-                    <div className='adminButtons'>
-                        <button className='adminButton' onClick={() => { navigate('/EditLoc/' + locationID) }}>Edit</button>
-                        <button className='adminButton' onClick={() => { handleDelete() }}>Delete</button>
-                    </div>
-                ) : null
-            }
+            <div id='locResButtons'>
+                {
+                    isAdmin ? (
+                        <div className='adminButtons'>
+                            <button className='locResButton' onClick={() => { navigate('/EditLoc/' + locationID) }}>Edit</button>
+                            <button className='locResButton' onClick={() => { handleDelete() }}>Delete</button>
+                        </div>
+                    ) : null
+                }
+            </div>
         </div>
     );
 }

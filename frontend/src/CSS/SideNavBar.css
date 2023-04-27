@@ -4,6 +4,7 @@
   --showNavBarWidthOpen: var(--sideNavBarWidth)+var(--showNavBarWidthClosed);
   --searchHeight: 60vh;
   --gapSize: 5px;
+  --commonBoxShadow: 0 1px 2px rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
 }
 
 .sideNavBar {
@@ -13,7 +14,7 @@
   background-color: white;
   z-index: 2;
   transition: width 0.5s ease-in-out;
-  box-shadow: 0 1px 2px rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+  box-shadow: var(--commonBoxShadow);
 }
 
 .sideNavBarClosed {
@@ -23,7 +24,7 @@
   background-color: white;
   z-index: 2;
   transition: width 0.5s ease-in-out;
-  box-shadow: 0 1px 2px rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+  box-shadow: var(--commonBoxShadow);
 }
 
 .logged-in {
@@ -47,41 +48,9 @@
   gap: var(--gapSize);
 }
 
-.searchBar{
-  padding-top: 5px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--gapSize);
-  height: var(--searchHeight);
-}
-.searchResults{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
-  height: fit-content;
-  border-top: #aaa 1px solid;
-  border-bottom: #aaa 1px solid;
-  padding-bottom: 5px;
-}
-
-.searchResult{
-  border: #aaa 1px solid;
-  border-radius: 5px;
-  padding: 5px;
-  margin-top: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
-.searchResults p, .searchResults h3{
-  line-height: 1;
-  font-size: 12px;
-}
-
 .showSideNavBar {
   position: absolute;
+  cursor: pointer;
   left: var(--sideNavBarWidth);
   top: 25vh;
   width: var(--showNavBarWidthOpen);
@@ -93,6 +62,7 @@
 
 .showSideNavBarClosed {
   position: absolute;
+  cursor: pointer;
   left: 0vw;
   width: var(--showNavBarWidthClosed);
   top: 25vh;
@@ -123,30 +93,8 @@
 
 .navButton:active{
   background: #7da8b6;
+  transition: background 0.01s ease, color 0.01s ease, border-color 0.01s ease;
 }
-
-.directionsBar {
-  padding: 12px 20px;
-  font-size: 14px;
-  font-family: "Lexend Deca", sans-serif;
-  border: 2px solid #ddd;
-  border-radius: 6px;
-  text-align: left;
-  outline: transparent;
-  width: 150px;
-  height: 5px;
-  transition: border-color 0.2s ease;
-}
-
-
-.directionsBar:hover{
-  border-color: #aaa;
-}
-
-.directionsBar:focus{
-  border-color: blue;
-}
-
 
 #openTab{
   opacity: 1;

@@ -6,7 +6,7 @@ const API_URL = "http://localhost:9000/";
 export default class MapDirectionService {
 
     reverseLatLon(loc) {
-        return loc[2] + "," + loc[1];
+        return loc.lon + "," + loc.lat;
     }
 
     getWalkingDirections(start, end,) {

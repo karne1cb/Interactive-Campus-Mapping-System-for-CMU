@@ -16,7 +16,7 @@ export default function NavBar(props) {
     const { pathname } = location;
     const [isAdmin, setIsAdmin] = useState(false); // Might want to make sure this is fine to be here
 
-    const childToParent = (data) => {
+    const searchBarData = (data) => {
         //setClickedResults(data);
         navDestData(data);
     }
@@ -84,7 +84,7 @@ export default function NavBar(props) {
                                 <button className='navButton'>Favorites</button>
                             </div>
                             <div className="search">
-                                <SearchBar resultData={childToParent /* TODO: CHANGE THIS NAME */} />
+                                <SearchBar searchBarData={searchBarData /* TODO: CHANGE THIS NAME */} />
                             </div>
                         </div>
                         <div className="otherButtons">
@@ -101,15 +101,9 @@ export default function NavBar(props) {
                                         }
                                     >Add Location</button>
                                 </div>
-                            ) : (<div>
-                                <button
-                                    className='navButton'
-                                    onClick={
-                                        () => {
-                                            navigate('/RequestLocTest');
-                                        }
-                                    }>Request Location</button>
-                            </div>)
+                            ) : (
+                                <></>
+                            )
                             }
                             <button className='navButton'>About</button>
                             </div>

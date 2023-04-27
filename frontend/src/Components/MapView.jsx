@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from 'react';
+import { React, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl } from 'react-leaflet';
 import AuthService from './AuthService';
@@ -43,11 +43,15 @@ export default function MapView() {
     const [loggedIn, setLoggedIn] = useState(true);
     const { pathname } = useLocation();
     // State to update the map when a destination is selected
+    const [lastDate, setlastDate] = useState(null);
     const [destination, setDestination] = useState(null);
+    const [isDirectionsMapped, setisDirectionsMapped] = useState(false); // State to see if the directions have been mapped
     const [location, setLocation] = useState(null);
     const [newDest, setNewDest] = useState(false);
     const [newLoc, setNewLoc] = useState(false);
-    const [lastUpdated, setLastUpdated] = useState(null);
+    const [lastClicked, setLastClicked] = useState(null);
+    const [isLocationResultOpen, setIsLocationResultOpen] = useState(false);
+    //const [doNavigation, setDoNavigation] = useState(false); // State to if the user pressed the 'Go' button
     const [map, setMap] = useState(null); // State to grab the map
     const [dirLayer, setDirLayer] = useState(null); // State to grab the direction layer
 
@@ -55,22 +59,19 @@ export default function MapView() {
     // This does assume that the data is in the correct format (i.e. [lat, long])
     const parseNavData = (data) => {
         //console.log(data);
-        return [data[1], data[2]];
+        return [data.lat, data.lon];
     }
 
     // This function is called when the user gets directions
-    const getWalkingDir= () => {
-        //console.log(destination);
-        //console.log(location);
+    const getWalkingDir = () => {
         if (destination !== null && location !== null) {
             const dirService = new MapDirectionService();
             dirService.getWalkingDirections(location, destination)
-            .then((data) => {
-                //console.log(data); // Is in GeoJSON format
-                // Now we need to add the GeoJSON to the map
-                setDirLayer(L.geoJSON(data).addTo(map))
-                //console.log(dirLayer);
-            });
+                .then((data) => {
+                    // Now we need to add the GeoJSON to the map
+                    setDirLayer(L.geoJSON(data).addTo(map))
+                    setisDirectionsMapped(true);
+                });
         }
     }
 
@@ -79,31 +80,48 @@ export default function MapView() {
         if (dirLayer !== null) {
             dirLayer.clearLayers();
             setDirLayer(null);
+            setisDirectionsMapped(false);
         }
     }
 
     const navDestData = (data) => { //Gets data all the way from search results
         // Check to see if the data changed from last time
-        if (data.destination !== destination) {
+        // Better method?
+        if (JSON.stringify(data.destination) !== JSON.stringify(destination)) {
             setNewDest(true);
+            // check to see if the destination is the same as the location
             setDestination(data.destination);
-            setLastUpdated('dest');
             clearDirections();
         }
         else {
             setNewDest(false);
+            // console.log(newDest);
         }
-        if (data.location !== location) {
+
+        if (JSON.stringify(data.location) !== JSON.stringify(location)) {
+            // console.log(data.location);
+            // console.log(location);
             setNewLoc(true);
+            // check to see if the destination is the same as the location
             setLocation(data.location);
-            setLastUpdated('loc');
             clearDirections();
         }
         else {
             setNewLoc(false);
         }
-        getWalkingDir(); // ....
-        //console.log(data);
+
+        setLastClicked(data.active);
+        setlastDate(data.date);
+
+        // Before navigating, check to make sure destination and location are not the same
+        if (destination !== location) {
+            // Add logic to make sure that the directions are not already on the map
+            // Now check to see if the Go button was pressed
+            if (data.goButtonStatus && !isDirectionsMapped) {
+                getWalkingDir();
+            }
+        }
+
     }
 
     const sleep = ms => new Promise(
@@ -124,15 +142,11 @@ export default function MapView() {
     //     }
     // }, [pathname]);
 
-    useEffect(() => {
-        const user = AuthService.getCurrentUser();
-    }, []);
-
     // adds a marker to the map when a destination is selected
     const addDestMarker = () => {
         if (destination !== null) {
             const destData = parseNavData(destination);
-            if (newDest) map.flyTo(destData, defaultZoom, {duration: 1});
+            if (newDest) map.flyTo(destData, defaultZoom, { duration: 1 });
             //setUpdateDestRes(true);
             return (
                 <Marker position={destData} icon={destIcon}>
@@ -142,37 +156,43 @@ export default function MapView() {
                 </Marker>
             );
         }
+        else{
+            return null;
+        }
     }
 
     const addLocMarker = () => {
         if (location !== null) {
             const locData = parseNavData(location);
-            if (newLoc) map.flyTo(locData, defaultZoom);
+            if (newLoc) map.flyTo(locData, defaultZoom, { duration: 1 });
             //setUpdateLocRes(true);
             return (
                 <Marker position={locData}>
                     <Popup>
-                        <h3>{locData.name}</h3>
+                        <h3>{location.name}</h3>
                     </Popup>
                 </Marker>
             );
         }
+        else{
+            return null;
+        }
     }
 
     const addLocationResult = () => {
-        if (lastUpdated === 'dest') {
+        if (lastClicked === 'destination') {
             return (
-                <LocationResult locationID={destination[0]}/>
+                <LocationResult key={`lastdateclicked-${lastDate}`} locationID={destination._id}/>
             )
         }
-        else if (lastUpdated === 'loc') {
+        else if (lastClicked === 'location') {
             return (
-                <LocationResult locationID={location[0]}/>
+                <LocationResult key={`lastdateclicked-${lastDate}`} locationID={location._id}/>
             )
         }
         else {
-            return(
-                <LocationResult locationID={null}/>
+            return (
+                <LocationResult key={`lastdateclicked-${0}`} locationID={null}/>
             );
         }
     }
