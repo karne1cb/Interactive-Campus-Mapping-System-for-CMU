@@ -1,7 +1,7 @@
 # Interactive Campus Mapping System for CMU
 
 ### How to run it
-- clone the repo and go into
+- clone the repo, open a terminal, and cd into it
 - run the following commands to build the docker containers
     - $ docker-compose build
         - builds the containers
