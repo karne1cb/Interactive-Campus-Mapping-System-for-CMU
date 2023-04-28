@@ -98,7 +98,6 @@ export default function NavBar(props) {
                                 <p>Welcome {fullName}!</p>
                                 <button className='navButton' onClick={handleLogout}>Logout</button>
                                 {/* This is where the favorites view will go (opens up over the nav bar*/}
-                                <button className='navButton'>Favorites</button>
                             </div>
                             <div className="search">
                                 <SearchBar searchBarData={searchBarData /* TODO: CHANGE THIS NAME */} />
@@ -122,7 +121,6 @@ export default function NavBar(props) {
                                 <></>
                             )
                             }
-                            <button className='navButton'>About</button>
                             </div>
                         </div>
                     </>
