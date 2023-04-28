@@ -32,7 +32,6 @@ export default function AddLocation() {
     const [longitude, setLongitude] = useState('');
     const [latitude, setLatitude] = useState('');
 
-    const [locImgID, setLocImgID] = useState('');
     const [locImg, setLocImg] = useState('');
     const [locLinks, setLocLinks] = useState(['']);
 
@@ -54,15 +53,8 @@ export default function AddLocation() {
 
     const handleAddLocation = async () => {
         console.log("Adding location...");
-        const imgID = await handleAddingLocImg(); // Update the image first
-        if (imgID === null) {
-            console.log("Image Error");
-            return;
-        }
-        setLocImgID(imgID); // probably doesn't work still
-        console.log(locImgID);
         try {
-            const res = await LocationService.addLocation(locName, locDesc, longitude, latitude, locAddress, imgID, isBuilding, floorPlanLoc, locLinks);
+            const res = await LocationService.addLocation(locName, locDesc, longitude, latitude, locAddress, locImg, isBuilding, floorPlanLoc, locLinks);
             console.log("Status: " + res);
             if (res === 200) {
                 alert("Location added successfully!");
@@ -75,49 +67,6 @@ export default function AddLocation() {
             alert("Error adding location");
         }
     };
-
-    const handleAddingLocImg = async () => {
-        console.log("Uploading image...");
-        // Update the image first
-        var imgID = locImgID;
-        console.log(imgID);
-
-        try {
-            const res = await LocImgService.addImage(locImg);
-            imgID = res.data._id; // Set the locImgID to the new image id
-            if (res.status === 200) {
-                console.log("Image added successfully!");
-            } else {
-                alert("Error adding image");
-            }
-        } catch (error) {
-            console.error(error);
-            alert("Error adding image");
-            return null;
-        }
-
-        return imgID;
-    };
-
-    // const handleImage = () => {
-    //     console.log("Adding picture...");
-
-    //     // Change image into a base64 string
-    //     const file = document.querySelector('input[type=file]').files[0];
-    //     // Fist, make sure file is not too large
-    //     if (file.size > 8000000) {
-    //         alert("File is too large. Please choose a file that is less than 8MB.");
-    //         return;
-    //     }
-    //     const reader = new FileReader();
-    //     reader.readAsDataURL(file);
-    //     reader.onload = () => {
-    //         setLocImg(reader.result);
-    //     };
-    //     reader.onerror = (error) => {
-    //         console.log('Error: ', error);
-    //     };
-    // };
 
     const handleGotoButton = () => {
         if (longitude === 0 || latitude === 0 || longitude === null || latitude === null) {
@@ -170,14 +119,6 @@ export default function AddLocation() {
         newLinks.push({ name: '', link: '' });
         setLocLinks(newLinks);
     };
-
-    // Event that handles when an image load error occurs
-    // const handleImageError = (e) => {
-    //     // regex to remove everything after the last slash so that the if statement can work (if the image is not found, it will be replaced with the noimage.png image)
-    //     const testStr = e.target.src.replace(/.*\//, '');
-    //     if (testStr != 'noimage.png') e.target.src = '/images/noimage.png';
-    //     console.log(e.target.src)
-    // };
 
     return (
         <>

@@ -5,6 +5,9 @@
 
 const mongoose = require('mongoose');
 
+/**
+ * The Link schema
+ */
 const LinkSchema = new mongoose.Schema({
     name: {type: String, required: true},
     link: {type: String, required: true}
@@ -18,10 +21,10 @@ const LocationSchema = new mongoose.Schema({
     adress: {type: String, required: false},
     shape: {type: String, required: true},
     color: {type: String, required: true},
-    locImg: {type: String, required: true}, // ID of the location image
+    locImg: {type: String, required: true}, // uri of the location image
     isBuilding: {type: Boolean, required: true},
     floorPlanLoc: {type: String, required: false}, // floorPlanLoc: only required if isBuilding is true and hasFloorPlan is true;
-    links: [LinkSchema], // array of links to other locations
+    links: [LinkSchema], // Schema for links to other locations
     orgRequestor: {type: String, required: true} // original person that requested this location
 });
 

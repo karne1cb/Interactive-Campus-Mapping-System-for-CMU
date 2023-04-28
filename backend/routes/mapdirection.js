@@ -1,7 +1,6 @@
 /**
  * Handles the routing service for the map
  */
-
 const express = require('express');
 const router = express.Router();
 const authCheck = require('../authCheck');
@@ -12,7 +11,11 @@ const start = 0;
 const end = 0;
 const OldapiUrl = 'https://api.openrouteservice.org/v2/directions/foot-walking?api_key=' + key + '&start=' + start + '&end=' + end;
 const apiUrl = 'https://api.openrouteservice.org/v2/directions/'
-// get request to get the directions from the api when walking
+
+/**
+ * @route   GET /mapdirection/walking/:dir
+ * @desc    Get the walking directions from the OpenRouteService
+ */
 router.get('/walking/:dir', authCheck, function (req, res) {
     const dir = req.params.dir;
     const splitDir = dir.split(','); // should split this into an array of 4 --> [startLat, startLong, endLat, endLong]

@@ -1,6 +1,7 @@
 /** 
  * Schema for LocationImage
  * Used to store images for a location
+ * Currently, unused
  */
 
 const mongoose = require('mongoose');

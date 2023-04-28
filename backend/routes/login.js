@@ -17,18 +17,18 @@ const validateGlobalId = (globalId) => {
   return pattern.test(globalId);
 }
 
-// GET test code
-// TODO: Determine if we still need this test code
-router.get('/', function (req, res, next) {
-  res.send("login endpoint");
-});
-
-// GET action to test whether user is authenticated
+/**
+ * @route   GET /login/authCheck
+ * @desc    Checks if the user is logged in
+ */
 router.get('/authCheck', authCheck, function (req, res) {
   res.status(200).send();
 });
 
-// POST action for logging in to the site. Sends token to user upon successful authentication
+/**
+ * @route   POST /login
+ * @desc    Login a user
+ */
 router.post('/', function (req, res) {
   const { globalId, password } = req.body;
   // Validate global id
