@@ -1,9 +1,7 @@
 import { React, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl } from 'react-leaflet';
-import AuthService from './AuthService';
 import MapDirectionService from './MapDirectionService';
-import LocationService from './LocationService';
 import LocationResult from './LocationResult';
 import NavBar from './SideNavBar';
 import '../CSS/MapView.css';

@@ -40,7 +40,7 @@ class AuthService {
   // Easy way to get header for authentication
   authHeader() {
     const user = JSON.parse(localStorage.getItem('user'));
-  
+
     if (user && user.accessToken) {
       // for Node.js Express back-end
       return { 'x-access-token': user.accessToken };
@@ -51,21 +51,40 @@ class AuthService {
 
   // Determine if user is admin WARNING: Might not want to use this in production to restrict routes
   async isAdmin() {
-      try {
-        let res = await axios({
-          url: API_URL + 'adminTest',
-          method: 'get',
-          timeout: 8000,
-          headers: this.authHeader()
-        })
-         if(res.status === 200){
-             return true;
-         }    
-         return false;
-     }
-     catch (err) {
-         console.error(err);
-     }
+    try {
+      let res = await axios({
+        url: API_URL + 'adminTest',
+        method: 'get',
+        timeout: 8000,
+        headers: this.authHeader()
+      })
+      if (res.status === 200) {
+        return true;
+      }
+      return false;
+    }
+    catch (err) {
+      console.error(err);
+    }
+  }
+
+  // Determine if user is logged in WARNING: Might not want to use this in production to restrict routes
+  async isLoggedIn() {
+    try {
+      let res = await axios({
+        url: API_URL + 'authCheck',
+        method: 'get',
+        timeout: 8000,
+        headers: this.authHeader()
+      })
+      if (res.status === 200) {
+        return true;
+      }
+      return false;
+    }
+    catch (err) {
+      console.error(err);
+    }
   }
 }
 

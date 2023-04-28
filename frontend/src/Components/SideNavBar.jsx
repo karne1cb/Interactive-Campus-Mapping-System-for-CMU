@@ -57,6 +57,7 @@ export default function NavBar(props) {
     const handleLogout = () => {
         AuthService.logout();
         setLoggedIn(false);
+        navigate('/login');
     };
 
     const handleLogin = () => {

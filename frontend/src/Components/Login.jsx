@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from './AuthService';
+import '../CSS/Login.css';
 
 export default function Login() {
     const [globalId, setGlobalId] = useState('');
@@ -20,8 +21,9 @@ export default function Login() {
 
     return (
         <div className="login">
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit}>
+
+            <form id='loginForm' onSubmit={handleSubmit}>
+                <h1>Login</h1>
                 <input
                     type="text"
                     placeholder="globalId"
