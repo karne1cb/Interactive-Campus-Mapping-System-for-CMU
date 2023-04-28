@@ -4,7 +4,7 @@ import AuthService from './AuthService';
 import LocationService from './LocationService.jsx';
 import LocImgService from './LocImgService';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMapEvents } from 'react-leaflet';
-import '../CSS/RequestAddLocation.css';
+import '../CSS/AddEditLocation.css';
 
 export default function EditLocation() {
 
@@ -47,15 +47,9 @@ export default function EditLocation() {
 
     const handleUpdateLocation = async () => {
         console.log("Updating location...");
-        const imgID = await handleUpdateLocImg(); // Update the image first
-        if (imgID === null) {
-            console.log("Image Error");
-            return;
-        }
-        setLocImgID(imgID); // probably doesn't work still
-        console.log(locImgID);
+
         try {
-            const res = await LocationService.updateLocation(lId, locName, locDesc, longitude, latitude, locAddress, imgID, isBuilding, floorPlanLoc, locLinks);
+            const res = await LocationService.updateLocation(lId, locName, locDesc, longitude, latitude, locAddress, locImgID, isBuilding, floorPlanLoc, locLinks);
             console.log("Status: " + res);
             if (res === 200) {
                 alert("Location updated successfully!");
@@ -69,62 +63,12 @@ export default function EditLocation() {
         }
     };
 
-    const handleUpdateLocImg = async () => {
-        console.log("Uploading image...");
-        // Update the image first
-        var imgID = locImgID;
-        console.log(imgID);
-        if (imgID == "" || imgID == null || imgID == " ") {
-            try {
-                const res = await LocImgService.addImage(locImg);
-                imgID = res.data._id; // Set the locImgID to the new image id
-                if (res.status === 200) {
-                    console.log("Image added successfully!");
-                } else {
-                    alert("Error adding image");
-                }
-            } catch (error) {
-                console.error(error);
-                alert("Error adding image");
-                return null;
-            }
+    const handleGotoButton = () => {
+        if (longitude === 0 || latitude === 0 || longitude === null || latitude === null) {
+            map.flyTo(centerLoc, defaultZoom);
+        } else {
+            map.flyTo([latitude, longitude], defaultZoom);
         }
-        // Else, update the image
-        else {
-            try {
-                const res = await LocImgService.updateImage(imgID, locImg);
-                console.log("Status: " + res);
-                if (res === 200) {
-                    console.log("Image updated successfully!");
-                } else {
-                    alert("Error updating image");
-                }
-            } catch (error) {
-                console.error(error);
-                alert("Error updating image");
-            }
-        }
-        return imgID;
-    };
-
-    const handleImage = () => {
-        console.log("Adding picture...");
-        
-        // Change image into a base64 string
-        const file = document.querySelector('input[type=file]').files[0];
-        // Fist, make sure file is not too large
-        if (file.size > 8000000) {
-            alert("File is too large. Please choose a file that is less than 8MB");
-            return;
-        }
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            setLocImg(reader.result);
-        };
-        reader.onerror = (error) => {
-            console.log('Error: ', error);
-        };
     };
 
     //Get the location data from the backend on when the page is first loaded
@@ -134,7 +78,7 @@ export default function EditLocation() {
             return;
         }
         LocationService.getLocation(lId).then((data) => {
-            console.log(data);
+            //console.log(data);
             setLocName(data.name);
             setLocDesc(data.desc);
             setLongitude(data.lon);
@@ -145,17 +89,6 @@ export default function EditLocation() {
             setIsBuilding(data.isBuilding);
             setFloorPlanLoc(data.floorPlanLoc);
             setLocLinks(data.links);
-            // Get the image
-            console.log(locImgID);
-            if (locImgID !== '' || locImgID !== ' ') {
-                LocImgService.getImage(locImgID).then((data) => {
-                    if (data === null || data === undefined || data === '') {
-                        console.log("Error getting location image");
-                        return;
-                    }
-                    setLocImg(data.img);
-                });
-            }
         });
 
     }, [lId, setLocName, setLocDesc, setLongitude, setCenterLoc, setLatitude, setLocAddress, setLocImgID, setIsBuilding, setFloorPlanLoc, setLocLinks, locImgID]);
@@ -167,7 +100,7 @@ export default function EditLocation() {
             click: (e) => {
                 setLatitude(e.latlng.lat);
                 setLongitude(e.latlng.lng);
-                console.log("Latitude: " + e.latlng.lat + " Longitude: " + e.latlng.lng);
+                //console.log("Latitude: " + e.latlng.lat + " Longitude: " + e.latlng.lng);
             }
         });
         return (
@@ -179,18 +112,36 @@ export default function EditLocation() {
         );
     };
 
-    // Event that handles when an image load error occurs
-    const handleImageError = (e) => {
-        // regex to remove everything after the last slash so that the if statement can work (if the image is not found, it will be replaced with the noimage.png image)
-        const testStr = e.target.src.replace(/.*\//, '');
-        if (testStr != 'noimage.png') e.target.src = '/images/noimage.png';
-        console.log(e.target.src)
+    const handleLinkNameChange = (index, event) => {
+        const newName = event.target.value;
+        const newLinks = [...locLinks];
+        newLinks[index] = {name: newName, link: newLinks[index].link};
+        setLocLinks(newLinks);
+    };
+
+    const handleLinkLinkChange = (index, event) => {
+        const newLink = event.target.value;
+        const newLinks = [...locLinks];
+        newLinks[index] = {name: newLinks[index].name, link: newLink};
+        setLocLinks(newLinks);
+    };
+
+    const handleRemoveLink = (index) => {
+        const newLinks = [...locLinks];
+        newLinks.splice(index, 1);
+        setLocLinks(newLinks);
+    };
+
+    const handleAddLink = () => {
+        const newLinks = [...locLinks];
+        newLinks.push({name: '', link: ''});
+        setLocLinks(newLinks);
     };
 
     return (
         <>
             <div className="locationForm">
-                <h1>Edit Location</h1>
+                <h1>Edit a Location</h1>
                 <input
                     type="text"
                     placeholder="Enter Location Name"
@@ -207,51 +158,73 @@ export default function EditLocation() {
                     value={locAddress}
                     onChange={(e) => setLocAddress(e.target.value)}
                 />
-                <input
-                    type="checkbox"
-                    id="isBuilding"
-                    name="isBuilding"
-                    defaultChecked={!isBuilding}
-                    onClick={(e) => handleIsBuilding(e.target.value)}
-                />
-                <label> Is this a building? </label>
-                {isBuilding ? (
-                    <>
-                        <input
-                            type="text"
-                            placeholder="Enter Floor Plan Link"
-                            value={floorPlanLoc}
-                            onChange={(e) => setFloorPlanLoc(e.target.value)}
-                        />
-                    </>
-                ) : null}
-                <input
-                    type="number"
-                    placeholder="Enter Longitude"
-                    value={longitude}
-                    onChange={(e) => setLongitude(e.target.value)} />
-                <input
-                    type="number"
-                    placeholder="Enter Latitude"
-                    value={latitude}
-                    onChange={(e) => setLatitude(e.target.value)} />
-                <button className='gotoLoc' onClick={() => { map.flyTo(centerLoc) }}>Goto pin</button>
-                {
-                    // This is where shape and color will be selected later
-                }
-                <img id="locImg" src={locImg} onError={handleImageError} />
-                <input
-                    type="file"
-                    placeholder="Enter Location Image"
-                    onChange={(e) => handleImage(e.target.value)}
-                />
 
+                <div className='isBuildingCheckbox'>
+                    <input
+                        type="checkbox"
+                        className="isBuildingCheckbox"
+                        name="isBuilding-Checkbox"
+                        defaultChecked={isBuilding}
+                        onClick={(e) => handleIsBuilding(e.target.value)}
+                    />
+                    <label className='isBuildingCheckbox' id='checkboxLabel' htmlFor='checkbox'> Is this a building? </label>
+                </div>
                 <input
+                    id={isBuilding ? 'floorPlanInput' : 'floorPlanInput-hidden'}
                     type="text"
+                    placeholder="Enter Floor Plan Link"
+                    value={floorPlanLoc}
+                    onChange={(e) => setFloorPlanLoc(e.target.value)}
+                />
+                <div className="longladInput">
+                    <label id='longitudeLabel'>Longitude: </label>
+                    <input
+                        id='longitudeInput'
+                        type="number"
+                        placeholder="Enter Longitude"
+                        value={longitude}
+                        onChange={(e) => setLongitude(e.target.value)} />
+                    <label id='latitudeLabel'>Latitude: </label>
+                    <input
+                        id='latitudeInput'
+                        type="number"
+                        placeholder="Enter Latitude"
+                        value={latitude}
+                        onChange={(e) => setLatitude(e.target.value)} />
+                </div>
+                <div className="mapButtons">
+                    <button className='addEditLocButton' id='gotoLoc' onClick={() => { handleGotoButton() }}>Goto pin</button>
+                    <button className='addEditLocButton' id='returnToCenter' onClick={() => { map.flyTo(centerLoc, defaultZoom) }}>Back To CMU</button>
+                </div>
+                {/* <textarea
+                    id='locationLinks'
                     placeholder="Enter Links (comma separated)"
                     value={locLinks}
+                    rows={20}
+                    cols={40}
                     onChange={(e) => setLocLinks(e.target.value)}
-                />
+                /> */}
+                <div className="locationLinks">
+                    <h3>Links</h3>
+                    {locLinks.map((link, index) => (
+                        <div className="link" key={index}>
+                            <input
+                                type="text"
+                                placeholder="Enter Link Name"
+                                value={link.name}
+                                onChange={(e) => handleLinkNameChange (index, e)}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Enter Link"
+                                value={link.link}
+                                onChange={(e) => handleLinkLinkChange (index, e)}
+                            />
+                            <button className='removeLinkButton' onClick={() => handleRemoveLink(index)}>Remove Link</button>
+                        </div>
+                    ))}
+                    <button className='addLinkButton' onClick={handleAddLink}>Add Link</button>
+                </div>
                 <button className='updateLocationButton' onClick={handleUpdateLocation}>Update Location</button>
             </div>
             <div className="map">

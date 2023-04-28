@@ -54,7 +54,7 @@ export default function LocationResult(props) {
         if (locationData.links === null || locationData.links === undefined) return;
         return locationData.links.map((link, index) => {
             return (
-                <a className='locResText' key={index} id='link' href={link.link}>{link.name}</a>
+                <a className='locationResText' key={index} id='link' href={link.link}>{link.name}</a>
             );
         });
     }

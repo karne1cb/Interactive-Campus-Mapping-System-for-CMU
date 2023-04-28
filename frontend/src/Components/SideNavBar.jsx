@@ -9,7 +9,7 @@ export default function NavBar(props) {
     const [loggedIn, setLoggedIn] = useState(false);
     const [fullName, setFullName] = useState('');
     const [globalId, setGlobalId] = useState('');
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
     const { navDestData } = props

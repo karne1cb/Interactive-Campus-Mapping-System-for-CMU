@@ -1,17 +1,11 @@
-:root {
-    --maxWidth: 340px;
-    --closedWidth: 30px;
-    --searchResultsHeight: 60vh;
-}
-
 .locationResult {
     position: absolute;
-    width: var(--maxWidth);
+    width: var(--maxLocResultWidth);
     height: 100vh;
     background-color: white;
     z-index: 4;
     transition: width 0.5s ease-in-out;
-    box-shadow: 0 1px 2px rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+    box-shadow: var(--commonBoxShadow);
 }
 
 .locationResultClosed {
@@ -25,17 +19,27 @@
 
 #closeButton {
     position: absolute;
+    top: 5px;
     right: 5px;
-    border-radius: 12px;
+    border-radius: 8px;
     width: 25px;
     height: 25px;
+}
+
+#closeButton:hover {
+    background-color: #ea6060;
+    border-color: #da4444;
+}
+
+#closeButton:active {
+    background-color: #c04444;
 }
 
 #locationData {
     position: absolute;
     width: fit-content;
     right: 0px;
-    width: var(--maxWidth);
+    width: var(--maxLocResultWidth);
     padding-right: 0px;
     z-index: 3;
     word-wrap: break-word;
@@ -43,6 +47,7 @@
 
 #locationData h3 {
     margin: 0px;
+    margin-top: 5px;
     padding: 0px;
     font-size: 24px;
     font-family: "Lexend Deca", sans-serif;
@@ -73,11 +78,20 @@
     font-variation-settings: "wght" 400;
 }
 
+#locationResLinkedText a:visited{
+    color : purple;
+}
+
+#locationResLinkedText a:hover {
+    color : red;
+}
+
+
 #locResButtons {
     position: absolute;
     width: fit-content;
     right: 0px;
-    width: var(--maxWidth);
+    width: var(--maxLocResultWidth);
     padding-right: 0px;
     bottom: 50px;
     z-index: 2;
@@ -96,33 +110,8 @@
     min-width: 100px;
 }
 
-.locResButton{
-    height: 30px;
-    text-align: center;
-    font-size: 14px;
-    font-family: "Lexend Deca", sans-serif;
-    font-variation-settings: "wght" 500;
-    color: black;
-    background: #dadada;
-    border: 2px solid #aaa;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-  }
-  
-  .adminButton:hover{
-    background: #add8e6;
-    border-color: #8db8c6;
-  }
-  
-  .adminButton:active{
-    background: #7da8b6;
-    transition: background 0.01s ease, color 0.01s ease, border-color 0.01s ease;
-  }
-
-
 #locImgRes {
-    margin-top: 30px;
+    margin-top: 35px;
     max-width: 95%;
     object-fit: cover;
     object-position: center;

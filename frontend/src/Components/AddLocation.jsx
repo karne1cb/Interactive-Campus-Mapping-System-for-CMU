@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import LocationService from './LocationService.jsx';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMapEvents } from 'react-leaflet';
 import LocImgService from './LocImgService.jsx';
-import '../CSS/RequestAddLocation.css';
+import '../CSS/AddEditLocation.css';
 
 export default function AddLocation() {
 
@@ -29,8 +29,8 @@ export default function AddLocation() {
     const [isBuilding, setIsBuilding] = useState(false);
     const [floorPlanLoc, setFloorPlanLoc] = useState('');
 
-    const [longitude, setLongitude] = useState(0);
-    const [latitude, setLatitude] = useState(0);
+    const [longitude, setLongitude] = useState('');
+    const [latitude, setLatitude] = useState('');
 
     const [locImgID, setLocImgID] = useState('');
     const [locImg, setLocImg] = useState('');
@@ -40,7 +40,7 @@ export default function AddLocation() {
 
     // Changes where the zoom and zoom out buttons are located
     const zoomControlPosition = 'bottomright';
-    const [centerLoc, setCenterLoc] = useState([43.5915541973643, -84.77518008037302]);
+    const centerLoc = [43.5915541973643, -84.77518008037302]
     var defaultZoom = 17;
     const [map, setMap] = useState(null); // State to grab the map
 
@@ -99,24 +99,32 @@ export default function AddLocation() {
         return imgID;
     };
 
-    const handleImage = () => {
-        console.log("Adding picture...");
-        
-        // Change image into a base64 string
-        const file = document.querySelector('input[type=file]').files[0];
-        // Fist, make sure file is not too large
-        if (file.size > 8000000) {
-            alert("File is too large. Please choose a file that is less than 8MB.");
-            return;
+    // const handleImage = () => {
+    //     console.log("Adding picture...");
+
+    //     // Change image into a base64 string
+    //     const file = document.querySelector('input[type=file]').files[0];
+    //     // Fist, make sure file is not too large
+    //     if (file.size > 8000000) {
+    //         alert("File is too large. Please choose a file that is less than 8MB.");
+    //         return;
+    //     }
+    //     const reader = new FileReader();
+    //     reader.readAsDataURL(file);
+    //     reader.onload = () => {
+    //         setLocImg(reader.result);
+    //     };
+    //     reader.onerror = (error) => {
+    //         console.log('Error: ', error);
+    //     };
+    // };
+
+    const handleGotoButton = () => {
+        if (longitude === 0 || latitude === 0 || longitude === null || latitude === null) {
+            map.flyTo(centerLoc, defaultZoom);
+        } else {
+            map.flyTo([latitude, longitude], defaultZoom);
         }
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            setLocImg(reader.result);
-        };
-        reader.onerror = (error) => {
-            console.log('Error: ', error);
-        };
     };
 
     // Event that handles when the user clicks on the map (pins a location)
@@ -137,18 +145,44 @@ export default function AddLocation() {
         );
     };
 
-    // Event that handles when an image load error occurs
-    const handleImageError = (e) => {
-        // regex to remove everything after the last slash so that the if statement can work (if the image is not found, it will be replaced with the noimage.png image)
-        const testStr = e.target.src.replace(/.*\//, '');
-        if (testStr != 'noimage.png') e.target.src = '/images/noimage.png';
-        console.log(e.target.src)
+    const handleLinkNameChange = (index, event) => {
+        const newName = event.target.value;
+        const newLinks = [...locLinks];
+        newLinks[index] = { name: newName, link: newLinks[index].link };
+        setLocLinks(newLinks);
     };
+
+    const handleLinkLinkChange = (index, event) => {
+        const newLink = event.target.value;
+        const newLinks = [...locLinks];
+        newLinks[index] = { name: newLinks[index].name, link: newLink };
+        setLocLinks(newLinks);
+    };
+
+    const handleRemoveLink = (index) => {
+        const newLinks = [...locLinks];
+        newLinks.splice(index, 1);
+        setLocLinks(newLinks);
+    };
+
+    const handleAddLink = () => {
+        const newLinks = [...locLinks];
+        newLinks.push({ name: '', link: '' });
+        setLocLinks(newLinks);
+    };
+
+    // Event that handles when an image load error occurs
+    // const handleImageError = (e) => {
+    //     // regex to remove everything after the last slash so that the if statement can work (if the image is not found, it will be replaced with the noimage.png image)
+    //     const testStr = e.target.src.replace(/.*\//, '');
+    //     if (testStr != 'noimage.png') e.target.src = '/images/noimage.png';
+    //     console.log(e.target.src)
+    // };
 
     return (
         <>
             <div className="locationForm">
-                <h1>Edit Location</h1>
+                <h1>Add a Location</h1>
                 <input
                     type="text"
                     placeholder="Enter Location Name"
@@ -165,52 +199,73 @@ export default function AddLocation() {
                     value={locAddress}
                     onChange={(e) => setLocAddress(e.target.value)}
                 />
+
+                <div className='isBuildingCheckbox'>
+                    <input
+                        type="checkbox"
+                        className="isBuildingCheckbox"
+                        name="isBuilding-Checkbox"
+                        defaultChecked={isBuilding}
+                        onClick={(e) => handleIsBuilding(e.target.value)}
+                    />
+                    <label className='isBuildingCheckbox' id='checkboxLabel' htmlFor='checkbox'> Is this a building? </label>
+                </div>
                 <input
-                    type="checkbox"
-                    id="isBuilding"
-                    name="isBuilding"
-                    defaultChecked={isBuilding}
-                    onClick={(e) => handleIsBuilding(e.target.value)}
+                    id={isBuilding ? 'floorPlanInput' : 'floorPlanInput-hidden'}
+                    type="text"
+                    placeholder="Enter Floor Plan Link"
+                    value={floorPlanLoc}
+                    onChange={(e) => setFloorPlanLoc(e.target.value)}
                 />
-                <label> Is this a building? </label>
-                {isBuilding ? (
-                    <>
-                        <input
-                            type="text"
-                            placeholder="Enter Floor Plan Link"
-                            value={floorPlanLoc}
-                            onChange={(e) => setFloorPlanLoc(e.target.value)}
-                        />
-                    </>
-                ) : null}
-                <input
-                    type="number"
-                    placeholder="Enter Longitude"
-                    value={longitude}
-                    onChange={(e) => setLongitude(e.target.value)} />
-                <input
-                    type="number"
-                    placeholder="Enter Latitude"
-                    value={latitude}
-                    onChange={(e) => setLatitude(e.target.value)} />
-                <button className='gotoLoc' onClick={() => { map.flyTo(centerLoc) }}>Goto pin</button>
-                {
-                    // This is where shape and color will be selected later
-                }
-                <img id="locImg" src={locImg} onError={handleImageError} />
+                <div className="longladInput">
+                    <label id='longitudeLabel'>Longitude: </label>
+                    <input
+                        id='longitudeInput'
+                        type="number"
+                        placeholder="Enter Longitude"
+                        value={longitude}
+                        onChange={(e) => setLongitude(e.target.value)} />
+                    <label id='latitudeLabel'>Latitude: </label>
+                    <input
+                        id='latitudeInput'
+                        type="number"
+                        placeholder="Enter Latitude"
+                        value={latitude}
+                        onChange={(e) => setLatitude(e.target.value)} />
+                </div>
+                <div className="mapButtons">
+                    <button className='addEditLocButton' id='gotoLoc' onClick={() => { handleGotoButton() }}>Goto pin</button>
+                    <button className='addEditLocButton' id='returnToCenter' onClick={() => { map.flyTo(centerLoc, defaultZoom) }}>Back To CMU</button>
+                </div>
+                {/* <img id="locImg" src={locImg} onError={handleImageError} />
                 <input
                     type="file"
                     placeholder="Enter Location Image"
                     onChange={(e) => handleImage(e.target.value)}
-                />
+                /> */}
 
-                <input
-                    type="text"
-                    placeholder="Enter Links (comma separated)"
-                    value={locLinks}
-                    onChange={(e) => setLocLinks(e.target.value)}
-                />
-                <button className='addLocationButton' onClick={handleAddLocation}>Add Location</button>
+                <div className="locationLinks">
+                    <h3>Links</h3>
+                    {locLinks.map((link, index) => (
+                        <div className="link" key={index}>
+                            <input
+                                type="text"
+                                placeholder="Enter Link Name"
+                                value={link.name}
+                                onChange={(e) => handleLinkNameChange(index, e)}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Enter Link"
+                                value={link.link}
+                                onChange={(e) => handleLinkLinkChange(index, e)}
+                            />
+                            <button className='removeLinkButton' onClick={() => handleRemoveLink(index)}>Remove Link</button>
+                        </div>
+                    ))}
+                    <button className='addLinkButton' onClick={handleAddLink}>Add Link</button>
+                </div>
+                <button className='addEditLocButton' id='addEditButton' onClick={handleAddLocation}>Add Location</button>
             </div>
             <div className="map">
                 <MapContainer className="mapContainer"

@@ -4,7 +4,6 @@ import { Route, BrowserRouter as Router, Routes, Navigate} from 'react-router-do
 import MapView from './Components/MapView';
 import Login from './Components/Login';
 import AdminTest from './Components/AdminCheck';
-import RemoveLocation from './Components/RemoveLocation';
 import AddLocation from './Components/AddLocation';
 import EditLocation from './Components/EditLocation';
 
@@ -18,7 +17,6 @@ function App() {
           <Route exact path="/map" element={<MapView />} />
           <Route exact path="/adminTest" element={<AdminTest />} />
           <Route exact path="/login" element={<Login />} />
-          <Route exact path="/RemoveLoc" element={<RemoveLocation />} />
           <Route exact path="/AddLoc" element={<AddLocation />} />
           <Route exact path="/EditLoc/*" element={<EditLocation/>} />
           <Route exact path="" element={<Navigate to="/map"/>}/> {/* Redirect to map if no path is specified */}

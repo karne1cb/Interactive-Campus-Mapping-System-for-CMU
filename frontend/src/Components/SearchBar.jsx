@@ -13,23 +13,11 @@ export default function SearchBar(props) {
     // event that handles if the search bar is closed or open
     const [destinationText, setDestinationText] = useState('');
     const [locationText, setLocationText] = useState('');
-    const [locSearch, setLocSearch] = useState(false); // false = destination, true = location
+    const [locSearch, setLocSearch] = useState(true); // false = destination, true = location
     const [searchResults, setSearchResults] = useState([]);
     const [searchResultData, setSearchResultData] = useState({ destination: null, location: null });
     const [goButtonStatus, setGoButtonStatus] = useState(false);
-    const pathname = useLocation().pathname;
 
-    const badPaths = ['/login', '/RequestLocTest', '/RemoveLoc', '/AddLoc'];
-    // function that checks to see if the user is on a page that should not have the search bar
-    // TODO: remove this function as it is deprecated
-    const checkPath = () => {
-        for (let i = 0; i < badPaths.length; i++) {
-            if (pathname === badPaths[i]) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     const selectedResultData = (data) => {
         var searchData = searchResultData;
@@ -67,11 +55,8 @@ export default function SearchBar(props) {
 
     // function that searches for the inputted text
     const search = (query) => {
-        //childToParent(null); // Clear the map
-        console.log(query);
         const data = SearchService.searchLocation(query);
         data.then((data) => {
-            console.log(data);
             const results = [];
             for (let i = 0; i < data.length; i++) {
                 results.push([data[i]._id, data[i].name, data[i].desc, data[i].lon, data[i].lat]);
@@ -80,9 +65,20 @@ export default function SearchBar(props) {
         });
     };
 
-    const handleSearch = (e) => {
+    const handleLocSearch = (e) => {
+        // Sets the text of the search bar
+        setLocationText(e.target.value);
+        
+
+        if (e.target.value.trim() === '') {
+            setSearchResults([]);
+        }
+    }
+
+    const handleDestSearch = (e) => {
+        // Sets the text of the search bar
         setDestinationText(e.target.value);
-        if (e.target.value === '') {
+        if (e.target.value.trim() === '') {
             setSearchResults([]);
         }
     }
@@ -113,7 +109,7 @@ export default function SearchBar(props) {
                     type="text"
                     placeholder="Location"
                     value={locationText}
-                    onChange={(e) => setLocationText(e.target.value)}
+                    onChange={(e) => handleLocSearch(e)}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                             search(locationText);
@@ -128,7 +124,7 @@ export default function SearchBar(props) {
                         type="text"
                         placeholder="Destination"
                         value={destinationText}
-                        onChange={(e) => handleSearch(e)}
+                        onChange={(e) => handleDestSearch(e)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 search(destinationText);
