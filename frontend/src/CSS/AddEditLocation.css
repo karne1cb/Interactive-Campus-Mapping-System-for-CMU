@@ -12,7 +12,22 @@
     box-shadow: var(--commonBoxShadow)
 }
 
-.locationForm input[type='text']{
+.locationForm h1 {
+    margin: 0;
+    margin-top: var(--gapSize);
+}
+
+.locationLinks-container {
+    gap: 0px;
+}
+
+.locationLinks-container h3 {
+    margin: 0;
+    margin-bottom: 5px;
+    font-size: 24px;
+}
+
+.locationForm input[type='text'] {
     width: 230px;
 }
 
@@ -24,33 +39,34 @@
     column-gap: 10px;
 }
 
-.longladInput #longitudeInput{
-    grid-row-start: 1;
-    grid-column-start: 2;
-}
-.longladInput #laditudeInput{
+.longladInput #longitudeInput {
     grid-row-start: 1;
     grid-column-start: 2;
 }
 
-.longladInput #longitudeLabel{
+.longladInput #laditudeInput {
+    grid-row-start: 1;
+    grid-column-start: 2;
+}
+
+.longladInput #longitudeLabel {
     grid-row-start: 1;
     grid-column-start: 1;
 }
 
-.longladInput #latitudeLabel{
+.longladInput #latitudeLabel {
     grid-row-start: 2;
     grid-column-start: 1;
 }
 
-.longladInput input[type='number']{
+.longladInput input[type='number'] {
     width: 138px;
 }
 
 .locationForm input[type=number]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
-  }
+}
 
 #locImg {
     width: 160px;
@@ -59,8 +75,56 @@
     object-position: center;
 }
 
-#locationLinks{
-    resize: none;
+.locationLinks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    height: 40vh;
+    border: #aaa 1px solid;
+    padding: 10px;
+    border-radius: 6px;
+    padding-bottom: 5px;
+}
+
+.locationLinks::-webkit-scrollbar {
+    width: 10px;
+}
+
+.locationLinks::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 5px;
+}
+
+.locationLinks::-webkit-scrollbar-track {
+    background-color: #ddd;
+}
+
+.locationLinks .link {
+    display: grid;
+    border: #aaa 1px solid;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+}
+
+.locationLinks .link #linkNameInput {
+    grid-row: 1;
+    grid-column-start: 1;
+}
+
+.locationLinks .link #linkLinkInput {
+    grid-row: 2;
+    grid-column-start: 1;
+}
+
+.locationLinks .link #removeLinkButton {
+    grid-row: 2;
+    grid-column-start: 2;
+}
+
+.locationLinks-container #addLinkButton {
+    margin-top: 10px;
 }
 
 .map {

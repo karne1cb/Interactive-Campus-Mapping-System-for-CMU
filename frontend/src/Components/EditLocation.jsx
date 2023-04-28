@@ -115,14 +115,14 @@ export default function EditLocation() {
     const handleLinkNameChange = (index, event) => {
         const newName = event.target.value;
         const newLinks = [...locLinks];
-        newLinks[index] = {name: newName, link: newLinks[index].link};
+        newLinks[index] = { name: newName, link: newLinks[index].link };
         setLocLinks(newLinks);
     };
 
     const handleLinkLinkChange = (index, event) => {
         const newLink = event.target.value;
         const newLinks = [...locLinks];
-        newLinks[index] = {name: newLinks[index].name, link: newLink};
+        newLinks[index] = { name: newLinks[index].name, link: newLink };
         setLocLinks(newLinks);
     };
 
@@ -134,7 +134,7 @@ export default function EditLocation() {
 
     const handleAddLink = () => {
         const newLinks = [...locLinks];
-        newLinks.push({name: '', link: ''});
+        newLinks.push({ name: '', link: '' });
         setLocLinks(newLinks);
     };
 
@@ -196,34 +196,30 @@ export default function EditLocation() {
                     <button className='addEditLocButton' id='gotoLoc' onClick={() => { handleGotoButton() }}>Goto pin</button>
                     <button className='addEditLocButton' id='returnToCenter' onClick={() => { map.flyTo(centerLoc, defaultZoom) }}>Back To CMU</button>
                 </div>
-                {/* <textarea
-                    id='locationLinks'
-                    placeholder="Enter Links (comma separated)"
-                    value={locLinks}
-                    rows={20}
-                    cols={40}
-                    onChange={(e) => setLocLinks(e.target.value)}
-                /> */}
-                <div className="locationLinks">
-                    <h3>Links</h3>
-                    {locLinks.map((link, index) => (
-                        <div className="link" key={index}>
-                            <input
-                                type="text"
-                                placeholder="Enter Link Name"
-                                value={link.name}
-                                onChange={(e) => handleLinkNameChange (index, e)}
-                            />
-                            <input
-                                type="text"
-                                placeholder="Enter Link"
-                                value={link.link}
-                                onChange={(e) => handleLinkLinkChange (index, e)}
-                            />
-                            <button className='removeLinkButton' onClick={() => handleRemoveLink(index)}>Remove Link</button>
-                        </div>
-                    ))}
-                    <button className='addLinkButton' onClick={handleAddLink}>Add Link</button>
+                <div className="locationLinks-container">
+                    <h3>Links:</h3>
+                    <div className="locationLinks">
+                        {locLinks.map((link, index) => (
+                            <div className="link" key={index}>
+                                <input
+                                    id='linkNameInput'
+                                    type="text"
+                                    placeholder="Enter Link Name"
+                                    value={link.name}
+                                    onChange={(e) => handleLinkNameChange(index, e)}
+                                />
+                                <input
+                                    id='linkLinkInput'
+                                    type="text"
+                                    placeholder="Enter Link"
+                                    value={link.link}
+                                    onChange={(e) => handleLinkLinkChange(index, e)}
+                                />
+                                <button id='removeLinkButton' onClick={() => handleRemoveLink(index)}>Remove Link</button>
+                            </div>
+                        ))}
+                        <button className='addLinkButton' onClick={handleAddLink}>Add Link</button>
+                    </div>
                 </div>
                 <button className='updateLocationButton' onClick={handleUpdateLocation}>Update Location</button>
             </div>
