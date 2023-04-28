@@ -1,27 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import AuthService from './AuthService';
 import LocationService from './LocationService.jsx';
-import LocImgService from './LocImgService';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMapEvents } from 'react-leaflet';
 import '../CSS/AddEditLocation.css';
 
+/**
+ * A component that allows an admin to edit a location in the database
+ * @returns The EditLocation component
+ */
 export default function EditLocation() {
 
-    /*
-    * This component is used to edit a location on the map
-    * */
+    // State variables for the location
     const [locName, setLocName] = useState('');
     const [locDesc, setLocDesc] = useState('');
     const [locAddress, setLocAddress] = useState('');
-
     const [isBuilding, setIsBuilding] = useState(false);
     const [floorPlanLoc, setFloorPlanLoc] = useState('');
-
     const [longitude, setLongitude] = useState(0);
     const [latitude, setLatitude] = useState(0);
-
-    const [locImgID, setLocImgID] = useState('');
     const [locImg, setLocImg] = useState('');
     const [locLinks, setLocLinks] = useState(['']);
 
@@ -43,13 +39,14 @@ export default function EditLocation() {
         setIsBuilding(!isBuilding);
     };
 
-    //.replace('\\s', ).split(',') handles when the user enters a list of links
-
+    /**
+     * Handles updating a location in the database
+     */
     const handleUpdateLocation = async () => {
         console.log("Updating location...");
 
         try {
-            const res = await LocationService.updateLocation(lId, locName, locDesc, longitude, latitude, locAddress, locImgID, isBuilding, floorPlanLoc, locLinks);
+            const res = await LocationService.updateLocation(lId, locName, locDesc, longitude, latitude, locAddress, locImg, isBuilding, floorPlanLoc, locLinks);
             console.log("Status: " + res);
             if (res === 200) {
                 alert("Location updated successfully!");
@@ -63,6 +60,10 @@ export default function EditLocation() {
         }
     };
 
+    /**
+     * Handles when the user hits the goto button
+     * Flies to the location on the map (if the location has a longitude and latitude)
+     */
     const handleGotoButton = () => {
         if (longitude === 0 || latitude === 0 || longitude === null || latitude === null) {
             map.flyTo(centerLoc, defaultZoom);
@@ -71,7 +72,9 @@ export default function EditLocation() {
         }
     };
 
-    //Get the location data from the backend on when the page is first loaded
+    /**
+     * Gets location data from the database and sets the state variables
+     */
     useEffect(() => {
         if (lId === null) {
             alert("Error getting location id");
@@ -85,16 +88,19 @@ export default function EditLocation() {
             setCenterLoc([data.lat, data.lon]);
             setLatitude(data.lat);
             setLocAddress(data.address);
-            setLocImgID(data.locImg);
+            setLocImg(data.locImg);
             setIsBuilding(data.isBuilding);
             setFloorPlanLoc(data.floorPlanLoc);
             setLocLinks(data.links);
         });
 
-    }, [lId, setLocName, setLocDesc, setLongitude, setCenterLoc, setLatitude, setLocAddress, setLocImgID, setIsBuilding, setFloorPlanLoc, setLocLinks, locImgID]);
+    }, [lId, setLocName, setLocDesc, setLongitude, setCenterLoc, setLatitude, setLocAddress, setLocImg, setIsBuilding, setFloorPlanLoc, setLocLinks, locImg]);
 
 
-    // Event that handles when the user clicks on the map (pins a location)
+    /**
+     * Allows the user to click on the map to set the longitude and latitude of the location
+     * @returns A marker on the map
+     */
     const HandleMapClick = () => {
         useMapEvents({
             click: (e) => {
@@ -112,6 +118,11 @@ export default function EditLocation() {
         );
     };
 
+    /**
+     * Handles when the name of a link is changed
+     * @param {*} index The index of the link
+     * @param {*} event The event that triggered the function
+     * */
     const handleLinkNameChange = (index, event) => {
         const newName = event.target.value;
         const newLinks = [...locLinks];
@@ -119,6 +130,11 @@ export default function EditLocation() {
         setLocLinks(newLinks);
     };
 
+    /**
+     * Handles when the link of a link is changed
+     * @param {*} index The index of the link
+     * @param {*} event The event that triggered the function
+     * */
     const handleLinkLinkChange = (index, event) => {
         const newLink = event.target.value;
         const newLinks = [...locLinks];
@@ -126,12 +142,21 @@ export default function EditLocation() {
         setLocLinks(newLinks);
     };
 
+    /**
+     * Handles when the remove link button is clicked
+     * Removes the link from the list of links
+     * @param {*} index index of the link
+     */
     const handleRemoveLink = (index) => {
         const newLinks = [...locLinks];
         newLinks.splice(index, 1);
         setLocLinks(newLinks);
     };
-
+    
+    /**
+     * Handles when the add link button is clicked
+     * Adds a new link to the list of links
+     */
     const handleAddLink = () => {
         const newLinks = [...locLinks];
         newLinks.push({ name: '', link: '' });

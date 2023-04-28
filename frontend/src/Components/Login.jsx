@@ -3,12 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import AuthService from './AuthService';
 import '../CSS/Login.css';
 
+/**
+ * Component for the login page
+ * @returns a Login component
+ */
 export default function Login() {
     const [globalId, setGlobalId] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    /**
+     * Handles when the user submits the login form
+     * @param {*} e
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {

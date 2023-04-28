@@ -2,39 +2,24 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LocationService from './LocationService.jsx';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMapEvents } from 'react-leaflet';
-import LocImgService from './LocImgService.jsx';
 import '../CSS/AddEditLocation.css';
 
+/**
+ * A component that allows an admin to add a location to the database
+ * @returns The AddLocation component
+ */
 export default function AddLocation() {
 
-    /*
-    * This component is used to add a location to be added to the map
-    * It will be a popup that will appear when the user clicks the button
-    * on the side nav bar
-    * It will have a text boxes for the user to enter the location name, description, and address (if applicable)
-    * There also is a checkbox to select if the location is a building or not
-    * If the location is a building, there will be more text boxes for the building name, room number, and floor number.
-    * Then, there will be buttons that'll allow the user to pin where the location is on the map (get longitude and latitude)
-    * Also, there'll be a button to add points on the map to outline the location
-    * There will be a button to add a picture of the location (not implemented in the DB yet)
-    * There will be a button to add links to websites about the location
-    * Finally, there is a button to submit the request
-    * The request will be sent to the backend and will be added to the database
-    * The location will be added to the map once it is approved by an admin
-    * */
+    // State variables for the location
     const [locName, setLocName] = useState('');
     const [locDesc, setLocDesc] = useState('');
     const [locAddress, setLocAddress] = useState('');
-
     const [isBuilding, setIsBuilding] = useState(false);
     const [floorPlanLoc, setFloorPlanLoc] = useState('');
-
     const [longitude, setLongitude] = useState('');
     const [latitude, setLatitude] = useState('');
-
     const [locImg, setLocImg] = useState('');
     const [locLinks, setLocLinks] = useState(['']);
-
     const navigate = useNavigate();
 
     // Changes where the zoom and zoom out buttons are located
@@ -51,6 +36,9 @@ export default function AddLocation() {
 
     //.replace('\\s', ).split(',') handles when the user enters a list of links
 
+    /**
+     * Handles adding a location to the database
+     */
     const handleAddLocation = async () => {
         console.log("Adding location...");
         try {
@@ -68,6 +56,10 @@ export default function AddLocation() {
         }
     };
 
+     /**
+     * Handles when the user hits the goto button
+     * Flies to the location on the map (if the location has a longitude and latitude)
+     */
     const handleGotoButton = () => {
         if (longitude === 0 || latitude === 0 || longitude === null || latitude === null) {
             map.flyTo(centerLoc, defaultZoom);
@@ -76,7 +68,10 @@ export default function AddLocation() {
         }
     };
 
-    // Event that handles when the user clicks on the map (pins a location)
+    /**
+     * Allows the user to click on the map to set the longitude and latitude of the location
+     * @returns A marker on the map
+     */
     const HandleMapClick = () => {
         useMapEvents({
             click: (e) => {
@@ -94,6 +89,11 @@ export default function AddLocation() {
         );
     };
 
+    /**
+     * Handles when the name of a link is changed
+     * @param {*} index The index of the link
+     * @param {*} event The event that triggered the function
+     */
     const handleLinkNameChange = (index, event) => {
         const newName = event.target.value;
         const newLinks = [...locLinks];
@@ -101,6 +101,11 @@ export default function AddLocation() {
         setLocLinks(newLinks);
     };
 
+    /**
+     * Handles when the link of a link is changed
+     * @param {*} index The index of the link
+     * @param {*} event The event that triggered the function
+     */
     const handleLinkLinkChange = (index, event) => {
         const newLink = event.target.value;
         const newLinks = [...locLinks];
@@ -108,12 +113,21 @@ export default function AddLocation() {
         setLocLinks(newLinks);
     };
 
+    /**
+     * Handles when the remove link button is clicked
+     * Removes the link from the list of links
+     * @param {*} index index of the link
+     */
     const handleRemoveLink = (index) => {
         const newLinks = [...locLinks];
         newLinks.splice(index, 1);
         setLocLinks(newLinks);
     };
 
+    /**
+     * Handles when the add link button is clicked
+     * Adds a new link to the list of links
+     */
     const handleAddLink = () => {
         const newLinks = [...locLinks];
         newLinks.push({ name: '', link: '' });

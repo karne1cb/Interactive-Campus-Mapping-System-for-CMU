@@ -1,16 +1,17 @@
 import { React, useState } from 'react';
-import { useLocation } from 'react-router';
-//import { Link } from 'react-router-dom';
-//import AuthService from './AuthService';
-import '../CSS/SearchBar.css';
 import SearchService from './SearchService';
 import SearchResult from './SearchResult';
+import '../CSS/SearchBar.css';
 
+/**
+ * Component for the search bar
+ * @param {*} props
+ * @returns a component for the search bar
+ */
 export default function SearchBar(props) {
 
-    const { searchBarData } = props;
-
-    // event that handles if the search bar is closed or open
+    const { searchBarData } = props; // Data that is passed from search results all the way to the mapview component
+    // State variables
     const [destinationText, setDestinationText] = useState('');
     const [locationText, setLocationText] = useState('');
     const [locSearch, setLocSearch] = useState(true); // false = destination, true = location
@@ -18,7 +19,10 @@ export default function SearchBar(props) {
     const [searchResultData, setSearchResultData] = useState({ destination: null, location: null });
     const [goButtonStatus, setGoButtonStatus] = useState(false);
 
-
+    /**
+     * Handles if a user clicks on a search result
+     * @param {*} data data from the search result
+     */
     const selectedResultData = (data) => {
         var searchData = searchResultData;
         if (data !== null) {
@@ -53,7 +57,10 @@ export default function SearchBar(props) {
         }
     }
 
-    // function that searches for the inputted text
+    /**
+     * function that searches for the inputted text
+     * @param {*} query A query to be searched for (either a location or a destination)
+     */
     const search = (query) => {
         const data = SearchService.searchLocation(query);
         data.then((data) => {
@@ -65,34 +72,53 @@ export default function SearchBar(props) {
         });
     };
 
+    /**
+     * Handles when searching for a location
+     * @param {*} e 
+     */
     const handleLocSearch = (e) => {
         // Sets the text of the search bar
         setLocationText(e.target.value);
-        
-
+        // if the search bar is empty, clear the search results
         if (e.target.value.trim() === '') {
             setSearchResults([]);
         }
     }
 
+    /**
+     * Handles when searching for a destination
+     * @param {*} e
+     */
     const handleDestSearch = (e) => {
         // Sets the text of the search bar
         setDestinationText(e.target.value);
+        // if the search bar is empty, clear the search results
         if (e.target.value.trim() === '') {
             setSearchResults([]);
         }
     }
 
+    /**
+     * Handles when the go button is pressed down
+     * @param {*} e
+     */
     const handleGoButtonDown = () => {
         setGoButtonStatus(true);
         doOnGoButtonToggle();
     }
-
+    /**
+     * Handles when the go button is depressed
+     * @param {*} e
+     */
     const handleGoButtonUp = () => {
         setGoButtonStatus(false);
         doOnGoButtonToggle();
     }
 
+    /**
+     * Handles when the go button is toggled
+     * @param {*} e
+     */
     const doOnGoButtonToggle = () => {
         const tempSearchResultData = searchResultData;
         tempSearchResultData.goButtonStatus = goButtonStatus;

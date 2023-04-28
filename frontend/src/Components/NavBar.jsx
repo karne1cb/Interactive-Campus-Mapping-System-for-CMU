@@ -1,11 +1,17 @@
 import { React, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-//import { Link } from 'react-router-dom';
 import AuthService from './AuthService';
-import '../CSS/SideNavBar.css';
+import '../CSS/NavBar.css';
 import SearchBar from './SearchBar';
 
+/**
+ * Component that displays the nav bar on the left side of the screen
+ * @param {*} props 
+ * @returns 
+ */
 export default function NavBar(props) {
+
+    // State variables
     const [loggedIn, setLoggedIn] = useState(false);
     const [fullName, setFullName] = useState('');
     const [globalId, setGlobalId] = useState('');
@@ -16,12 +22,14 @@ export default function NavBar(props) {
     const { pathname } = location;
     const [isAdmin, setIsAdmin] = useState(false); // Might want to make sure this is fine to be here
 
+    // Function to pass data up from the search bar
     const searchBarData = (data) => {
-        //setClickedResults(data);
         navDestData(data);
     }
 
-    // See if the user is an admin
+    /**
+     * Checks if the user is an admin
+     */
     function isUserAdmin() {
         AuthService.isAdmin().then(res => {
             let adminConst = res;
@@ -36,9 +44,12 @@ export default function NavBar(props) {
         });
     }
 
+    /**
+     * Sets state variables when the component is first rendered
+     * Checks if the user is an admin and displays the edit and delete buttons if they are
+     * Also checks if the user is logged in
+     */
     useEffect(() => {
-        //wait a second to see if the user is logged in
-
         const user = AuthService.getCurrentUser();
         if (user !== null) {
             setLoggedIn(true);
@@ -48,22 +59,27 @@ export default function NavBar(props) {
         } else {
             setLoggedIn(false);
         }
-        // close the navbar if the user is on the login page
-        if (pathname === '/login') {
-            setOpen(false);
-        }
     }, [pathname]);
 
+    /**
+     * Handles when the user clicks the logout button
+     */
     const handleLogout = () => {
         AuthService.logout();
         setLoggedIn(false);
         navigate('/login');
     };
 
+    /**
+     * Handles when the user clicks the login button (not really needed anymore, but here just in case)
+     */
     const handleLogin = () => {
         navigate('/login');
     };
 
+    /**
+     * Toggles the nav bar between open and closed
+     */
     const toggleSideNav = () => {
         setOpen(!open)
     };

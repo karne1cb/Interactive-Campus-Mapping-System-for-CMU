@@ -7,15 +7,20 @@ import '../CSS/LocationResult.css';
 /**
  * Shows the result of a location search as a sidebar that covers the nav bar (same size as the nav bar and has an x button to close it)
  * @param {*} props 
- * @returns 
+ * @returns a LocationResult component
  */
 export default function LocationResult(props) {
     const { locationID } = props;
+    // State variables for the location results
     const [isOpen, setIsOpen] = useState(false);
     const [locationData, setLocationData] = useState({});
     const [isAdmin, setIsAdmin] = useState(false);
     const navigate = useNavigate();
 
+    /**
+     * Sets state variables when the component is first rendered
+     * Checks if the user is an admin and displays the edit and delete buttons if they are
+     */
     useEffect(() => {
         if (locationID === null) {
             setIsOpen(false);
@@ -39,6 +44,10 @@ export default function LocationResult(props) {
         });
     }, [locationID]);
 
+    /**
+     * Handles when the user clicks the delete button
+     * Deletes the location from the database
+     */
     const handleDelete = () => {
         // add prompt to confirm delete
         if (window.confirm('Are you sure you want to delete this location?')) {
@@ -50,6 +59,10 @@ export default function LocationResult(props) {
         else alert('Location not deleted');
     }
 
+    /**
+     * Handles displaying the links for the location
+     * @returns a list of links for the location
+     */
     const handleLinks = () => {
         if (locationData.links === null || locationData.links === undefined) return;
         return locationData.links.map((link, index) => {
