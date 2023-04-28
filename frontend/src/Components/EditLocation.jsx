@@ -14,7 +14,7 @@ export default function EditLocation() {
     const [locName, setLocName] = useState('');
     const [locDesc, setLocDesc] = useState('');
     const [locAddress, setLocAddress] = useState('');
-    const [isBuilding, setIsBuilding] = useState(false);
+    const [isBuilding, setIsBuilding] = useState(undefined);
     const [floorPlanLoc, setFloorPlanLoc] = useState('');
     const [longitude, setLongitude] = useState(0);
     const [latitude, setLatitude] = useState(0);
@@ -81,7 +81,7 @@ export default function EditLocation() {
             return;
         }
         LocationService.getLocation(lId).then((data) => {
-            //console.log(data);
+            console.log(data);
             setLocName(data.name);
             setLocDesc(data.desc);
             setLongitude(data.lon);
