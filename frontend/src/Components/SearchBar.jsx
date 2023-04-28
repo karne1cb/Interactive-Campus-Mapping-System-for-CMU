@@ -166,7 +166,7 @@ export default function SearchBar(props) {
                         // add the results here
                         searchResults.map((result) => {
                             return (
-                                <SearchResult _id={result[0]} name={result[1]} desc={result[2]} lon={result[3]} lat={result[4]} selectedResultData={selectedResultData} />
+                                <div key={result[0]}><SearchResult _id={result[0]} name={result[1]} desc={result[2]} lon={result[3]} lat={result[4]} selectedResultData={selectedResultData} /></div>
                             );
                         })
                     }

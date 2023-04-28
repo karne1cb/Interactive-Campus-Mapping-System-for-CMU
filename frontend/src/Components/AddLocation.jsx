@@ -18,7 +18,7 @@ export default function AddLocation() {
     const [floorPlanLoc, setFloorPlanLoc] = useState('');
     const [longitude, setLongitude] = useState('');
     const [latitude, setLatitude] = useState('');
-    const [locImg, setLocImg] = useState('');
+    const [locImg, setLocImg] = useState(' ');
     const [locLinks, setLocLinks] = useState(['']);
     const navigate = useNavigate();
 

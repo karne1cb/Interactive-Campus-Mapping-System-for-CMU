@@ -36,7 +36,7 @@ export default function NavBar(props) {
             //console.log(adminConst);
             if (adminConst === true) {
                 setIsAdmin(true);
-                console.log(AuthService.authHeader());
+                //console.log(AuthService.authHeader());
             }
             else {
                 setIsAdmin(false);

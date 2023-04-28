@@ -76,7 +76,8 @@ export default function LocationResult(props) {
         <div className={isOpen ? 'locationResult' : 'locationResultClosed'}>
             <div id='locationData'>
                 <button className='locResButton' id='closeButton' onClick={() => { setIsOpen(false) }}>X</button>
-                <img id='locImgRes' src={'img_uploads/' + locationData.locImg}></img>
+                <img id='locImgRes' src={'img_uploads/' + locationData.locImg}
+                ></img>
                 <h3>{locationData.name}</h3>
                 <p className='locResText' id='desc'>{locationData.desc}</p>
                 <div id='locationResLinkedText'>
